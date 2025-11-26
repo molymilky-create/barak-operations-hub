@@ -1,128 +1,126 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { useData } from "@/context/DataContext";
-import { useAuth } from "@/context/AuthContext";
-import type { TaskPriority, TaskStatus } from "@/types";
+// src/pages/MyTasks.tsx
+import React, { useMemo } from "react";
+import { useData } from "../context/DataContext";
+import { useAuth } from "../context/AuthContext";
+import type { TaskStatus } from "../types";
 
-const MyTasks = () => {
-  const { tasks, updateTaskStatus } = useData();
+const statusLabels: Record<TaskStatus, string> = {
+  OPEN: "פתוח",
+  IN_PROGRESS: "בתהליך",
+  WAITING_CLIENT: "ממתין ללקוח",
+  WAITING_COMPANY: "ממתין לחברת ביטוח",
+  WAITING_MANAGER_REVIEW: "ממתין לאישור מנהל",
+  DONE: "סגור",
+  CANCELLED: "בוטל",
+};
+
+const MyTasks: React.FC = () => {
   const { user } = useAuth();
+  const { tasks, updateTaskStatus } = useData();
 
-  // סינון משימות של המשתמש הנוכחי
-  const myTasks = tasks.filter((task) => task.assignedToUserId === user?.id);
+  if (!user) {
+    return <div>אין משתמש מחובר.</div>;
+  }
 
-  const openTasks = myTasks.filter((t) => t.status === "OPEN");
-  const urgentTasks = myTasks.filter((t) => t.priority === "HIGH" || t.priority === "CRITICAL");
-  const completedThisWeek = myTasks.filter((t) => t.status === "DONE");
+  const todayStr = new Date().toISOString().slice(0, 10);
 
-  const getPriorityBadge = (priority: TaskPriority) => {
-    const variants: Record<TaskPriority, { variant: "default" | "secondary" | "destructive" | "outline"; label: string }> = {
-      LOW: { variant: "secondary", label: "נמוכה" },
-      NORMAL: { variant: "outline", label: "רגילה" },
-      HIGH: { variant: "default", label: "גבוהה" },
-      CRITICAL: { variant: "destructive", label: "קריטית" },
-    };
-    return <Badge variant={variants[priority].variant}>{variants[priority].label}</Badge>;
-  };
+  const myTasks = useMemo(() => tasks.filter((t) => t.assignedToUserId === user.id), [tasks, user.id]);
 
-  const getStatusLabel = (status: TaskStatus) => {
-    const labels: Record<TaskStatus, string> = {
-      OPEN: "פתוחה",
-      IN_PROGRESS: "בטיפול",
-      WAITING_CLIENT: "ממתין ללקוח",
-      WAITING_COMPANY: "ממתין לחברה",
-      WAITING_MANAGER_REVIEW: "ממתין לאישור מנהל",
-      DONE: "הושלמה",
-      CANCELLED: "בוטלה",
-    };
-    return labels[status];
-  };
+  const overdue = myTasks.filter((t) => t.dueDate < todayStr && t.status !== "DONE" && t.status !== "CANCELLED");
+  const dueToday = myTasks.filter((t) => t.dueDate === todayStr && t.status !== "DONE" && t.status !== "CANCELLED");
+  const waiting = myTasks.filter((t) => ["WAITING_CLIENT", "WAITING_COMPANY"].includes(t.status));
 
-  const handleToggleComplete = (taskId: string, currentStatus: TaskStatus) => {
-    const newStatus = currentStatus === "DONE" ? "OPEN" : "DONE";
-    updateTaskStatus(taskId, newStatus);
+  const changeStatus = (id: string, status: TaskStatus) => {
+    updateTaskStatus(id, status);
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold text-foreground">המשימות שלי</h1>
-        <p className="text-muted-foreground mt-1">כל המשימות שהוקצו לך</p>
+    <div className="space-y-6" dir="rtl">
+      <h1 className="text-2xl font-bold text-slate-800">המשימות שלי</h1>
+      <p className="text-sm text-slate-600">כאן תראה את כל המשימות שמוקצות אליך – לפי דחיפות וסטטוס.</p>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+        <div className="bg-white rounded-2xl shadow p-3">
+          <div className="text-slate-500">באיחור</div>
+          <div className="text-2xl font-bold text-red-600">{overdue.length}</div>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-3">
+          <div className="text-slate-500">להיום</div>
+          <div className="text-2xl font-bold text-orange-500">{dueToday.length}</div>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-3">
+          <div className="text-slate-500">ממתין (לקוח/חברה)</div>
+          <div className="text-2xl font-bold text-slate-700">{waiting.length}</div>
+        </div>
+        <div className="bg-white rounded-2xl shadow p-3">
+          <div className="text-slate-500">סה&quot;כ משימות</div>
+          <div className="text-2xl font-bold text-slate-800">{myTasks.length}</div>
+        </div>
       </div>
 
-      {/* סיכום */}
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>משימות פתוחות</CardDescription>
-            <CardTitle className="text-3xl">{openTasks.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>משימות דחופות</CardDescription>
-            <CardTitle className="text-3xl">{urgentTasks.length}</CardTitle>
-          </CardHeader>
-        </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>הושלמו השבוע</CardDescription>
-            <CardTitle className="text-3xl">{completedThisWeek.length}</CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
-
-      {/* רשימת משימות */}
-      <Card>
-        <CardHeader>
-          <CardTitle>המשימות שלי</CardTitle>
-          <CardDescription>סה"כ {myTasks.length} משימות</CardDescription>
-        </CardHeader>
-        <CardContent>
-          {myTasks.length === 0 ? (
-            <p className="text-muted-foreground text-center py-8">אין משימות להצגה</p>
-          ) : (
-            <div className="space-y-3">
-              {myTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="flex items-center gap-4 p-4 rounded-lg border border-border hover:bg-accent/50 transition-colors"
-                >
-                  <Checkbox
-                    checked={task.status === "DONE"}
-                    onCheckedChange={() => handleToggleComplete(task.id, task.status)}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3
-                        className={`font-medium ${
-                          task.status === "DONE" ? "line-through text-muted-foreground" : "text-foreground"
-                        }`}
+      <section className="bg-white rounded-2xl shadow p-4">
+        <h2 className="text-sm font-semibold mb-3">רשימת משימות</h2>
+        <div className="overflow-x-auto">
+          <table className="w-full text-right text-xs">
+            <thead>
+              <tr className="border-b">
+                <th className="py-2">משימה</th>
+                <th className="py-2">סוג</th>
+                <th className="py-2">מבוטח / לקוח</th>
+                <th className="py-2">תאריך יעד</th>
+                <th className="py-2">סטטוס</th>
+                <th className="py-2">עדיפות</th>
+              </tr>
+            </thead>
+            <tbody>
+              {myTasks.map((task) => {
+                const isOverdue = task.dueDate < todayStr && task.status !== "DONE" && task.status !== "CANCELLED";
+                return (
+                  <tr key={task.id} className="border-b last:border-0">
+                    <td className="py-2">
+                      <div className="font-semibold text-slate-800">{task.title}</div>
+                      {task.description && <div className="text-xs text-slate-500">{task.description}</div>}
+                    </td>
+                    <td className="py-2 text-xs">{task.kind}</td>
+                    <td className="py-2 text-xs">{task.relatedClientName || "-"}</td>
+                    <td className="py-2 text-xs">
+                      {task.dueDate} {isOverdue && <span className="text-red-600 font-semibold">(באיחור)</span>}
+                    </td>
+                    <td className="py-2 text-xs">
+                      <select
+                        className="border rounded-lg px-2 py-1 text-xs"
+                        value={task.status}
+                        onChange={(e) => changeStatus(task.id, e.target.value as TaskStatus)}
                       >
-                        {task.title}
-                      </h3>
-                      {getPriorityBadge(task.priority)}
-                    </div>
-                    {task.description && (
-                      <p className="text-sm text-muted-foreground mt-1">{task.description}</p>
-                    )}
-                    <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
-                      <span>סטטוס: {getStatusLabel(task.status)}</span>
-                      {task.dueDate && <span>תאריך יעד: {task.dueDate}</span>}
-                      {task.relatedClientName && <span>לקוח: {task.relatedClientName}</span>}
-                    </div>
-                  </div>
-                  <Button variant="outline" size="sm">
-                    ערוך
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                        {(Object.keys(statusLabels) as TaskStatus[]).map((st) => (
+                          <option key={st} value={st}>
+                            {statusLabels[st]}
+                          </option>
+                        ))}
+                      </select>
+                    </td>
+                    <td className="py-2 text-xs">
+                      {task.priority === "CRITICAL" && (
+                        <span className="px-2 py-1 rounded-full bg-red-100 text-red-700">קריטי</span>
+                      )}
+                      {task.priority === "HIGH" && (
+                        <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700">גבוה</span>
+                      )}
+                      {task.priority === "NORMAL" && (
+                        <span className="px-2 py-1 rounded-full bg-slate-100 text-slate-700">רגיל</span>
+                      )}
+                      {task.priority === "LOW" && (
+                        <span className="px-2 py-1 rounded-full bg-slate-50 text-slate-400">נמוך</span>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          {myTasks.length === 0 && <p className="text-xs text-slate-500 mt-3">כרגע אין משימות שהוקצו אליך.</p>}
+        </div>
+      </section>
     </div>
   );
 };
