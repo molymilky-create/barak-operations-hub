@@ -1,20 +1,28 @@
-{
-  "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "default",
-  "rsc": false,
-  "tsx": true,
-  "tailwind": {
-    "config": "tailwind.config.ts",
-    "css": "src/index.css",
-    "baseColor": "slate",
-    "cssVariables": true,
-    "prefix": ""
-  },
-  "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "hooks": "@/hooks"
-  }
+// src/components/Layout.tsx
+import React from "react";
+import Topbar from "./Topbar";
+import Sidebar from "./Sidebar";
+
+interface LayoutProps {
+  currentPage: "dashboard" | "myTasks" | "teamTasks" | "leads";
+  onChangePage: (page: "dashboard" | "myTasks" | "teamTasks" | "leads") => void;
+  children: React.ReactNode;
 }
+
+const Layout: React.FC<LayoutProps> = ({
+  currentPage,
+  onChangePage,
+  children,
+}) => {
+  return (
+    <div className="min-h-screen flex bg-slate-100" dir="rtl">
+      <Sidebar currentPage={currentPage} onChangePage={onChangePage} />
+      <div className="flex-1 flex flex-col">
+        <Topbar />
+        <main className="flex-1 p-4 md:p-6 overflow-auto">{children}</main>
+      </div>
+    </div>
+  );
+};
+
+export default Layout;
