@@ -1,9 +1,16 @@
 // src/context/DataContext.tsx
 import React, { createContext, useContext, useState } from "react";
-import type { Employee, Task, TaskStatus, TaskPriority, TaskKind } from "../types";
+import type { Employee, Task, TaskStatus, Lead, LeadStatus } from "../types";
 
 interface DataContextValue {
   employees: Employee[];
+
+  // לידים
+  leads: Lead[];
+  addLead: (data: Omit<Lead, "id" | "status" | "createdAt">) => void;
+  updateLeadStatus: (id: string, status: LeadStatus) => void;
+
+  // משימות
   tasks: Task[];
   addTask: (data: Omit<Task, "id" | "status" | "createdAt">) => void;
   updateTaskStatus: (id: string, status: TaskStatus) => void;
@@ -12,7 +19,7 @@ interface DataContextValue {
 const DataContext = createContext<DataContextValue | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // עובדים לדוגמה
+  // ===== עובדים לדוגמה =====
   const [employees] = useState<Employee[]>([
     {
       id: "u1",
@@ -33,7 +40,38 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     },
   ]);
 
-  // משימות לדוגמה
+  // ===== לידים לדוגמה =====
+  const [leads, setLeads] = useState<Lead[]>([
+    {
+      id: "L1",
+      name: "אורי כץ",
+      phone: "050-1234567",
+      email: "uri@example.com",
+      source: "אתר",
+      status: "NEW",
+      estimatedAnnualPremium: 5500,
+      nextActionDate: "2025-12-10",
+      nextActionNotes: "להתקשר בערב, רוצה הצעה לרכב + דירה",
+      lastChannel: "PHONE",
+      createdAt: "2025-12-01",
+      notes: "הופנה ע״י לקוח קיים",
+    },
+    {
+      id: "L2",
+      name: "תמר לביא",
+      phone: "052-7654321",
+      email: "tamar@example.com",
+      source: "פייסבוק",
+      status: "CONTACTED",
+      estimatedAnnualPremium: 3200,
+      nextActionDate: "2025-12-09",
+      nextActionNotes: "לשלוח השוואה בין 2 חברות",
+      lastChannel: "WHATSAPP",
+      createdAt: "2025-12-02",
+    },
+  ]);
+
+  // ===== משימות לדוגמה =====
   const [tasks, setTasks] = useState<Task[]>([
     {
       id: "t1",
@@ -63,6 +101,26 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     },
   ]);
 
+  // ===== לידים – פעולות =====
+  const addLead: DataContextValue["addLead"] = (data) => {
+    const id = `lead_${Date.now()}`;
+    const createdAt = new Date().toISOString().slice(0, 10);
+    setLeads((prev) => [
+      ...prev,
+      {
+        ...data,
+        id,
+        status: "NEW",
+        createdAt,
+      },
+    ]);
+  };
+
+  const updateLeadStatus = (id: string, status: LeadStatus) => {
+    setLeads((prev) => prev.map((l) => (l.id === id ? { ...l, status } : l)));
+  };
+
+  // ===== משימות – פעולות =====
   const addTask: DataContextValue["addTask"] = (data) => {
     const id = `task_${Date.now()}`;
     const createdAt = new Date().toISOString().slice(0, 10);
@@ -98,6 +156,9 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     <DataContext.Provider
       value={{
         employees,
+        leads,
+        addLead,
+        updateLeadStatus,
         tasks,
         addTask,
         updateTaskStatus,
