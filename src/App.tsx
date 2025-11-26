@@ -5,6 +5,8 @@ import Dashboard from "./pages/Dashboard";
 import MyTasks from "./pages/MyTasks";
 import TeamTasks from "./pages/TeamTasks";
 import Leads from "./pages/Leads";
+import { AuthProvider } from "./context/AuthContext";
+import { DataProvider } from "./context/DataContext";
 
 export type PageKey = "dashboard" | "myTasks" | "teamTasks" | "leads";
 
@@ -26,9 +28,13 @@ const App: React.FC = () => {
   };
 
   return (
-    <Layout currentPage={page} onChangePage={setPage}>
-      {renderPage()}
-    </Layout>
+    <AuthProvider>
+      <DataProvider>
+        <Layout currentPage={page} onChangePage={setPage}>
+          {renderPage()}
+        </Layout>
+      </DataProvider>
+    </AuthProvider>
   );
 };
 
