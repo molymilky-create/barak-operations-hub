@@ -1,11 +1,10 @@
 // src/components/Sidebar.tsx
 import React from "react";
-import type { PageKey } from "../App";
 import { useAuth } from "../context/AuthContext";
 
 interface Props {
-  currentPage: PageKey;
-  onChangePage: (page: PageKey) => void;
+  currentPage: string;
+  onChangePage: (page: string) => void;
 }
 
 const Sidebar: React.FC<Props> = ({ currentPage, onChangePage }) => {
