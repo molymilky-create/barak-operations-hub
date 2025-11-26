@@ -1,6 +1,6 @@
 // src/types.ts
 
-// Users
+// משתמשים
 export type Role = "admin" | "user";
 
 export interface User {
@@ -10,7 +10,7 @@ export interface User {
   role: Role;
 }
 
-// Employees
+// עובדים
 export interface Employee {
   id: string;
   name: string;
@@ -21,17 +21,11 @@ export interface Employee {
   managerId?: string;
 }
 
-// Tasks
-export type TaskKind =
-  | "LEAD"
-  | "RENEWAL"
-  | "COLLECTION"
-  | "CARRIER_REQUEST"
-  | "CERTIFICATE"
-  | "OTHER";
+// משימות
+export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "OTHER";
 
 export type TaskStatus =
-  "OPEN"
+  | "OPEN"
   | "IN_PROGRESS"
   | "WAITING_CLIENT"
   | "WAITING_COMPANY"
@@ -53,9 +47,9 @@ export interface Task {
   assignedToUserId: string;
   createdByUserId: string;
   createdAt: string; // yyyy-mm-dd
-  dueDate: string;   // yyyy-mm-dd
+  dueDate: string; // yyyy-mm-dd
 
-  relatedClientName?: string;
+  relatedClientName?: string; // בינתיים רק שם; בהמשך נוסיף מזהים אמיתיים
 
   requiresManagerReview?: boolean;
   managerApprovedAt?: string;
