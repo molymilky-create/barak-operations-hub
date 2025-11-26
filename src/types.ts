@@ -1,5 +1,3 @@
-Create a new file called src/types.ts and put the following TypeScript code in it:
-
 // src/types.ts
 
 // Users
