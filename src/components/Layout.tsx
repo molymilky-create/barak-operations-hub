@@ -1,12 +1,11 @@
 // src/components/Layout.tsx
 import React from "react";
-import type { PageKey } from "../App";
 import Sidebar from "./Sidebar";
 import Topbar from "./Topbar";
 
 interface Props {
-  currentPage: PageKey;
-  onChangePage: (page: PageKey) => void;
+  currentPage: string;
+  onChangePage: (page: string) => void;
   children: React.ReactNode;
 }
 
