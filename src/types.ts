@@ -1,9 +1,8 @@
 // src/types.ts
 
-// תפקיד משתמש / עובד
+// משתמשים
 export type Role = "admin" | "user";
 
-// ================== משתמש למערכת (ל־AuthContext) ==================
 export interface User {
   id: string;
   name: string;
@@ -11,7 +10,7 @@ export interface User {
   role: Role;
 }
 
-// ================== עובדים ==================
+// עובדים
 export interface Employee {
   id: string;
   name: string;
@@ -22,30 +21,7 @@ export interface Employee {
   managerId?: string;
 }
 
-// ================== לידים ==================
-export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
-
-export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING";
-
-export interface Lead {
-  id: string;
-  name: string;
-  phone?: string;
-  email?: string;
-  source?: string;
-  notes?: string;
-
-  status: LeadStatus;
-  estimatedAnnualPremium?: number;
-
-  nextActionDate?: string; // yyyy-mm-dd
-  nextActionNotes?: string;
-  lastChannel?: LeadChannel;
-
-  createdAt: string; // yyyy-mm-dd
-}
-
-// ================== משימות ==================
+// משימות
 export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "SERVICE" | "OTHER";
 
 export type TaskStatus =
@@ -73,8 +49,32 @@ export interface Task {
   createdAt: string; // yyyy-mm-dd
   dueDate: string; // yyyy-mm-dd
 
-  relatedClientName?: string;
+  relatedClientName?: string; // בינתיים רק שם; בהמשך נוסיף מזהים אמיתיים
 
   requiresManagerReview?: boolean;
   managerApprovedAt?: string;
+}
+
+// לידים
+export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
+
+export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING" | "OTHER";
+
+export interface Lead {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  source?: string; // פייסבוק, הפניה, אתר...
+  notes?: string;
+
+  status: LeadStatus;
+  estimatedAnnualPremium?: number;
+
+  nextActionDate?: string; // yyyy-mm-dd
+  nextActionNotes?: string;
+  lastChannel?: LeadChannel;
+
+  createdAt: string; // yyyy-mm-dd
+  assignedToUserId?: string; // מי מטפל בליד
 }
