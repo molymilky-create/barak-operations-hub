@@ -1,6 +1,6 @@
 // src/types.ts
 
-// תפקיד משתמש
+// בסיס משתמשים ותפקידים
 export type Role = "admin" | "user";
 
 export interface User {
@@ -18,13 +18,8 @@ export interface Company {
   name: string;
 }
 
-// סוגי מוצרים
-export type ProductType =
-  | "HORSE"
-  | "FARM"
-  | "INSTRUCTOR"
-  | "TRAINER"
-  | "OTHER";
+// סוגי מוצרים / פוליסות
+export type ProductType = "HORSE" | "FARM" | "INSTRUCTOR" | "TRAINER" | "OTHER";
 
 // מבוטחים
 export interface Client {
@@ -53,13 +48,7 @@ export interface Policy {
 }
 
 // חידושים
-export type RenewalStatus =
-  | "NEW"
-  | "IN_PROGRESS"
-  | "QUOTED"
-  | "WAITING_CLIENT"
-  | "COMPLETED"
-  | "CANCELLED";
+export type RenewalStatus = "NEW" | "IN_PROGRESS" | "QUOTED" | "WAITING_CLIENT" | "COMPLETED" | "CANCELLED";
 
 export interface Renewal {
   id: string;
@@ -74,12 +63,7 @@ export interface Renewal {
 }
 
 // גבייה
-export type CollectionStatus =
-  | "NEW"
-  | "REMINDER_SENT"
-  | "PARTIAL"
-  | "PAID"
-  | "WRITTEN_OFF";
+export type CollectionStatus = "NEW" | "REMINDER_SENT" | "PARTIAL" | "PAID" | "WRITTEN_OFF";
 
 export interface Collection {
   id: string;
@@ -153,7 +137,7 @@ export interface DocumentMeta {
   fileUrl: string;
 }
 
-// חוקים / חוזרים
+// חוקים וחוזרים
 export interface Regulation {
   id: string;
   title: string;
@@ -163,40 +147,53 @@ export interface Regulation {
   fileUrl: string;
 }
 
-// עובדים וימי חופש
+// עובדים
 export interface Employee {
   id: string;
   name: string;
   email: string;
   role: Role;
   position?: string;
-  hireDate?: string;
+  hireDate?: string; // yyyy-mm-dd
   managerId?: string;
 }
 
+// חופשות עובדים
 export type TimeOffStatus = "PENDING" | "APPROVED" | "REJECTED";
 
 export interface EmployeeTimeOff {
   id: string;
   employeeId: string;
-  from: string;
-  to: string;
+  from: string; // yyyy-mm-dd
+  to: string; // yyyy-mm-dd
   status: TimeOffStatus;
   reason?: string;
   createdAt: string;
 }
 
-// =======================
-// משימות (Task Management)
-// =======================
-export type TaskKind =
-  | "LEAD"
-  | "RENEWAL"
-  | "COLLECTION"
-  | "CERTIFICATE"
-  | "CARRIER_REQUEST"
-  | "SERVICE"
-  | "OTHER";
+// לידים
+export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
+
+export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING";
+
+export interface Lead {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  source?: string; // פייסבוק, באפי, אתר, הפניה וכו'
+  status: LeadStatus;
+  estimatedAnnualPremium?: number;
+  nextActionDate?: string; // yyyy-mm-dd
+  nextActionNotes?: string;
+  lastChannel?: LeadChannel;
+  notes?: string;
+  createdAt: string;
+  assignedToUserId?: string;
+}
+
+// משימות / Task Management
+export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "OTHER";
 
 export type TaskStatus =
   | "OPEN"
@@ -213,47 +210,14 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-
   kind: TaskKind;
   status: TaskStatus;
   priority: TaskPriority;
-
-  assignedToUserId: string; // על מי המשימה
-  createdByUserId: string; // מי יצר
+  assignedToUserId: string;
+  createdByUserId: string;
   createdAt: string; // yyyy-mm-dd
   dueDate: string; // yyyy-mm-dd
-
   relatedClientName?: string;
-  policyId?: string;
-  leadId?: string;
-
   requiresManagerReview?: boolean;
   managerApprovedAt?: string;
 }
-
-// =======================
-// לידים (Lead Management)
-// =======================
-export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
-
-export type LeadChannel =
-  | "PHONE"
-  | "WHATSAPP"
-  | "EMAIL"
-  | "SMS"
-  | "MEETING";
-
-export interface Lead {
-  id: string;
-  name: string;
-  phone?: string;
-  email?: string;
-  source?: string; // פייסבוק / אתר / הפניה
-  notes?: string;
-
-  status: LeadStatus;
-  estimatedAnnualPremium?: number;
-
-  nextActionDate?: string; // yyyy-mm-dd
-  nextActionNotes?: string;
-  lastCh
