@@ -20,6 +20,7 @@ const kindLabels: Record<TaskKind, string> = {
   COLLECTION: "גבייה",
   CARRIER_REQUEST: "בקשה לחברת ביטוח",
   CERTIFICATE: "אישור קיום",
+  SERVICE: "שירות / לקוח", // הערך שהיה חסר
   OTHER: "אחר",
 };
 
