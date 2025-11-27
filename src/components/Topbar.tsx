@@ -6,19 +6,19 @@ const Topbar: React.FC = () => {
   const { user, loginAsAdmin, loginAsUser, logout, isAdmin } = useAuth();
 
   return (
-    <header className="h-14 bg-white border-b border-slate-200 flex items-center justify-between px-4">
-      <div className="text-sm text-slate-600">
-        שלום, <span className="font-semibold">{user ? user.name : "אורח"}</span>{" "}
-        {user && (isAdmin ? "(מנהל)" : "(עובד)")}
+    <header className="h-16 bg-card border-b border-border flex items-center justify-between px-6 shadow-sm">
+      <div className="text-sm text-muted-foreground">
+        שלום, <span className="font-bold text-foreground text-lg">{user ? user.name : "אורח"}</span>{" "}
+        {user && <span className="text-xs bg-primary/10 text-primary px-2 py-1 rounded-full mr-2">{isAdmin ? "מנהל" : "עובד"}</span>}
       </div>
-      <div className="flex items-center gap-2 text-xs">
-        <button onClick={loginAsAdmin} className="px-2 py-1 rounded border border-slate-300 hover:bg-slate-100">
+      <div className="flex items-center gap-3">
+        <button onClick={loginAsAdmin} className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm font-medium">
           כניסה כמנהל
         </button>
-        <button onClick={loginAsUser} className="px-2 py-1 rounded border border-slate-300 hover:bg-slate-100">
+        <button onClick={loginAsUser} className="px-4 py-2 rounded-lg border border-border hover:bg-muted transition-colors text-sm font-medium">
           כניסה כעובד
         </button>
-        <button onClick={logout} className="px-2 py-1 rounded border border-red-300 text-red-700 hover:bg-red-50">
+        <button onClick={logout} className="px-4 py-2 rounded-lg bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors text-sm font-medium">
           התנתקות
         </button>
       </div>

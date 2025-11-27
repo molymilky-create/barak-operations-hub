@@ -1,7 +1,21 @@
-// src/pages/Leads.tsx
 import { useState } from "react";
 import { useData } from "../context/DataContext";
 import type { LeadStatus } from "../types";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Search, Plus, Sparkles, TrendingUp, Phone, Mail, Calendar } from "lucide-react";
 
 const statusLabels: Record<LeadStatus, string> = {
   NEW: "חדש",
@@ -41,8 +55,6 @@ const Leads: React.FC = () => {
     return true;
   });
 
-  const shortStatus = (status: LeadStatus) => statusLabels[status] || status;
-
   const handleAdd = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -73,147 +85,222 @@ const Leads: React.FC = () => {
     setNextActionNotes("");
   };
 
+  // סטטיסטיקות
+  const stats = {
+    NEW: leads.filter((l) => l.status === "NEW").length,
+    CONTACTED: leads.filter((l) => l.status === "CONTACTED").length,
+    QUOTED: leads.filter((l) => l.status === "QUOTED").length,
+    WON: leads.filter((l) => l.status === "WON").length,
+    LOST: leads.filter((l) => l.status === "LOST").length,
+  };
+
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">לידים</h1>
-
-      {/* פילטרים */}
-      <section className="bg-white rounded-2xl shadow p-4 space-y-3 text-sm">
-        <div className="flex flex-wrap gap-3 items-end">
-          <div className="flex flex-col">
-            <label className="text-xs text-slate-500 mb-1">חיפוש</label>
-            <input
-              className="border rounded-lg px-2 py-1 text-sm"
-              placeholder="חפש לפי שם, טלפון, מייל, מקור..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label className="text-xs text-slate-500 mb-1">סטטוס</label>
-            <select
-              className="border rounded-lg px-2 py-1 text-sm"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value === "ALL" ? "ALL" : (e.target.value as LeadStatus))}
-            >
-              <option value="ALL">הכל</option>
-              <option value="NEW">חדש</option>
-              <option value="CONTACTED">נוצר קשר</option>
-              <option value="QUOTED">נשלחה הצעה</option>
-              <option value="WON">נסגר (הצלחה)</option>
-              <option value="LOST">אבד</option>
-            </select>
-          </div>
+    <div className="space-y-8" dir="rtl">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-foreground mb-2">לידים - CRM</h1>
+          <p className="text-muted-foreground text-lg">
+            ניהול לידים והזדמנויות עסקיות חדשות
+          </p>
         </div>
-      </section>
+      </div>
 
-      {/* טופס הוספת ליד */}
-      <section className="bg-white rounded-2xl shadow p-4 text-sm">
-        <h2 className="text-sm font-semibold mb-3">הוספת ליד חדש</h2>
-        <form onSubmit={handleAdd} className="flex flex-wrap gap-3 items-end text-xs">
-          <div className="flex flex-col">
-            <label>שם *</label>
-            <input className="border rounded-lg px-2 py-1" value={name} onChange={(e) => setName(e.target.value)} />
+      {/* סטטיסטיקות */}
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setStatusFilter("NEW")}>
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-primary">{stats.NEW}</div>
+            <div className="text-sm text-muted-foreground mt-1">חדשים</div>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setStatusFilter("CONTACTED")}>
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-secondary">{stats.CONTACTED}</div>
+            <div className="text-sm text-muted-foreground mt-1">נוצר קשר</div>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setStatusFilter("QUOTED")}>
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-warning">{stats.QUOTED}</div>
+            <div className="text-sm text-muted-foreground mt-1">נשלחה הצעה</div>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setStatusFilter("WON")}>
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-success">{stats.WON}</div>
+            <div className="text-sm text-muted-foreground mt-1">נסגרו</div>
+          </CardContent>
+        </Card>
+        <Card className="hover:shadow-md transition-shadow cursor-pointer" onClick={() => setStatusFilter("LOST")}>
+          <CardContent className="pt-6 text-center">
+            <div className="text-3xl font-bold text-destructive">{stats.LOST}</div>
+            <div className="text-sm text-muted-foreground mt-1">אבדו</div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* הוספת ליד */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Plus className="h-5 w-5" />
+            הוספת ליד חדש
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleAdd} className="space-y-4">
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="name">שם מלא *</Label>
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="שם הליד" required />
+              </div>
+              <div>
+                <Label htmlFor="phone">טלפון</Label>
+                <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="050-1234567" />
+              </div>
+              <div>
+                <Label htmlFor="email">מייל</Label>
+                <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="example@email.com" />
+              </div>
+            </div>
+            <div className="grid md:grid-cols-3 gap-4">
+              <div>
+                <Label htmlFor="source">מקור</Label>
+                <Input id="source" value={source} onChange={(e) => setSource(e.target.value)} placeholder="פייסבוק, באפי, אתר..." />
+              </div>
+              <div>
+                <Label htmlFor="premium">פרמיה משוערת (₪)</Label>
+                <Input id="premium" type="number" value={estimatedPremium} onChange={(e) => setEstimatedPremium(e.target.value)} placeholder="5000" />
+              </div>
+              <div>
+                <Label htmlFor="next-date">תאריך פעולה הבאה</Label>
+                <Input id="next-date" type="date" value={nextActionDate} onChange={(e) => setNextActionDate(e.target.value)} />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="next-notes">הערות / פעולה הבאה</Label>
+              <Input id="next-notes" value={nextActionNotes} onChange={(e) => setNextActionNotes(e.target.value)} placeholder="התקשר ביום חמישי בבוקר" />
+            </div>
+            <Button type="submit" className="w-full md:w-auto">
+              <Plus className="h-4 w-4 mr-2" />
+              שמור ליד חדש
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* חיפוש וסינון */}
+      <Card>
+        <CardContent className="pt-6">
+          <div className="flex gap-4">
+            <div className="relative flex-1">
+              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="חיפוש לפי שם, טלפון, מייל או מקור..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pr-10"
+              />
+            </div>
+            <Select value={statusFilter} onValueChange={(v: any) => setStatusFilter(v)}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="כל הסטטוסים" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">כל הסטטוסים</SelectItem>
+                <SelectItem value="NEW">חדש</SelectItem>
+                <SelectItem value="CONTACTED">נוצר קשר</SelectItem>
+                <SelectItem value="QUOTED">נשלחה הצעה</SelectItem>
+                <SelectItem value="WON">נסגר (הצלחה)</SelectItem>
+                <SelectItem value="LOST">אבד</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-          <div className="flex flex-col">
-            <label>טלפון</label>
-            <input className="border rounded-lg px-2 py-1" value={phone} onChange={(e) => setPhone(e.target.value)} />
-          </div>
-          <div className="flex flex-col">
-            <label>מייל</label>
-            <input className="border rounded-lg px-2 py-1" value={email} onChange={(e) => setEmail(e.target.value)} />
-          </div>
-          <div className="flex flex-col">
-            <label>מקור</label>
-            <input
-              className="border rounded-lg px-2 py-1"
-              placeholder="פייסבוק, באפי, אתר..."
-              value={source}
-              onChange={(e) => setSource(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label>פרמיה משוערת (₪)</label>
-            <input
-              type="number"
-              className="border rounded-lg px-2 py-1"
-              value={estimatedPremium}
-              onChange={(e) => setEstimatedPremium(e.target.value)}
-            />
-          </div>
-          <div className="flex flex-col">
-            <label>תאריך פעולה הבאה</label>
-            <input
-              type="date"
-              className="border rounded-lg px-2 py-1"
-              value={nextActionDate}
-              onChange={(e) => setNextActionDate(e.target.value)}
-            />
-          </div>
-          <div className="flex-1 flex flex-col">
-            <label>הערות / פעולה הבאה</label>
-            <input
-              className="border rounded-lg px-2 py-1"
-              value={nextActionNotes}
-              onChange={(e) => setNextActionNotes(e.target.value)}
-            />
-          </div>
-          <div>
-            <button type="submit" className="px-4 py-2 rounded-xl bg-blue-600 text-white">
-              שמור ליד
-            </button>
-          </div>
-        </form>
-      </section>
+        </CardContent>
+      </Card>
 
       {/* טבלת לידים */}
-      <section className="bg-white rounded-2xl shadow p-4 text-xs">
-        <h2 className="text-sm font-semibold mb-3">רשימת לידים</h2>
-        <table className="w-full text-right">
-          <thead>
-            <tr className="border-b">
-              <th className="py-2">שם</th>
-              <th className="py-2">טלפון</th>
-              <th className="py-2">מייל</th>
-              <th className="py-2">מקור</th>
-              <th className="py-2">סטטוס</th>
-              <th className="py-2">פרמיה משוערת</th>
-              <th className="py-2">פעולה הבאה</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((lead) => (
-              <tr key={lead.id} className="border-b last:border-0">
-                <td className="py-2">{lead.name}</td>
-                <td className="py-2">{lead.phone || "-"}</td>
-                <td className="py-2">{lead.email || "-"}</td>
-                <td className="py-2">{lead.source || "-"}</td>
-                <td className="py-2">
-                  <select
-                    className="border rounded-lg px-2 py-1"
-                    value={lead.status}
-                    onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                  >
-                    <option value="NEW">חדש</option>
-                    <option value="CONTACTED">נוצר קשר</option>
-                    <option value="QUOTED">נשלחה הצעה</option>
-                    <option value="WON">נסגר (הצלחה)</option>
-                    <option value="LOST">אבד</option>
-                  </select>
-                </td>
-                <td className="py-2">
-                  {lead.estimatedAnnualPremium ? `${lead.estimatedAnnualPremium.toLocaleString("he-IL")} ₪` : "-"}
-                </td>
-                <td className="py-2">
-                  {lead.nextActionDate || "-"}
-                  {lead.nextActionNotes ? ` – ${lead.nextActionNotes}` : ""}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {filtered.length === 0 && <p className="text-center text-slate-400 mt-4">לא נמצאו לידים.</p>}
-      </section>
+      <Card>
+        <CardHeader>
+          <CardTitle>רשימת לידים ({filtered.length})</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>שם</TableHead>
+                <TableHead>טלפון</TableHead>
+                <TableHead>מייל</TableHead>
+                <TableHead>מקור</TableHead>
+                <TableHead>פרמיה משוערת</TableHead>
+                <TableHead>פעולה הבאה</TableHead>
+                <TableHead>סטטוס</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filtered.map((lead) => (
+                <TableRow key={lead.id}>
+                  <TableCell className="font-medium">{lead.name}</TableCell>
+                  <TableCell>
+                    {lead.phone ? (
+                      <div className="flex items-center gap-2">
+                        <Phone className="h-3 w-3 text-muted-foreground" />
+                        {lead.phone}
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {lead.email ? (
+                      <div className="flex items-center gap-2">
+                        <Mail className="h-3 w-3 text-muted-foreground" />
+                        {lead.email}
+                      </div>
+                    ) : (
+                      "-"
+                    )}
+                  </TableCell>
+                  <TableCell>{lead.source || "-"}</TableCell>
+                  <TableCell className="font-bold">
+                    {lead.estimatedAnnualPremium ? `₪${lead.estimatedAnnualPremium.toLocaleString()}` : "-"}
+                  </TableCell>
+                  <TableCell>
+                    {lead.nextActionDate && (
+                      <div className="text-sm">
+                        <div className="flex items-center gap-1 text-muted-foreground">
+                          <Calendar className="h-3 w-3" />
+                          {lead.nextActionDate}
+                        </div>
+                        {lead.nextActionNotes && (
+                          <div className="text-xs mt-1">{lead.nextActionNotes}</div>
+                        )}
+                      </div>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <Select value={lead.status} onValueChange={(v: LeadStatus) => updateLeadStatus(lead.id, v)}>
+                      <SelectTrigger className="w-[140px]">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="NEW">חדש</SelectItem>
+                        <SelectItem value="CONTACTED">נוצר קשר</SelectItem>
+                        <SelectItem value="QUOTED">נשלחה הצעה</SelectItem>
+                        <SelectItem value="WON">נסגר</SelectItem>
+                        <SelectItem value="LOST">אבד</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          {filtered.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">לא נמצאו לידים לפי הסינון הנוכחי</p>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 };
