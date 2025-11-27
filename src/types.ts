@@ -1,7 +1,5 @@
 // src/types.ts
 
-// ------------ משתמשים / תפקידים ------------
-
 export type Role = "admin" | "user";
 
 export interface User {
@@ -11,8 +9,6 @@ export interface User {
   role: Role;
 }
 
-// ------------ חברות / מוצרים ------------
-
 export type CompanyCode = "MENORA" | "HACHSHARA" | "OTHER";
 
 export interface Company {
@@ -20,41 +16,12 @@ export interface Company {
   name: string;
 }
 
-export type ProductType =// src/types.ts
-
-// ------------ משתמשים / תפקידים ------------
-
-export type Role = "admin" | "user";
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  role: Role;
-}
-
-// ------------ חברות / מוצרים ------------
-
-export type CompanyCode = "MENORA" | "HACHSHARA" | "OTHER";
-
-export interface Company {
-  id: CompanyCode;
-  name: string;
-}
-
-export type ProductType =
-  | "HORSE"
-  | "FARM"
-  | "INSTRUCTOR"
-  | "TRAINER"
-  | "OTHER";
-
-// ------------ מבוטחים / פוליסות ------------
+export type ProductType = "HORSE" | "FARM" | "INSTRUCTOR" | "TRAINER" | "OTHER";
 
 export interface Client {
   id: string;
   name: string;
-  idNumber: string; // ת"ז / ח"פ
+  idNumber: string;
   businessName?: string;
   companyNumber?: string;
   homeAddress?: string;
@@ -69,21 +36,13 @@ export interface Policy {
   companyId: CompanyCode;
   productType: ProductType;
   policyNumber: string;
-  startDate: string; // yyyy-mm-dd
+  startDate: string;
   endDate: string;
   annualPremium: number;
   notes?: string;
 }
 
-// ------------ חידושים ------------
-
-export type RenewalStatus =
-  | "NEW"
-  | "IN_PROGRESS"
-  | "QUOTED"
-  | "WAITING_CLIENT"
-  | "COMPLETED"
-  | "CANCELLED";
+export type RenewalStatus = "NEW" | "IN_PROGRESS" | "QUOTED" | "WAITING_CLIENT" | "COMPLETED" | "CANCELLED";
 
 export interface Renewal {
   id: string;
@@ -97,14 +56,7 @@ export interface Renewal {
   notes?: string;
 }
 
-// ------------ גבייה ------------
-
-export type CollectionStatus =
-  | "NEW"
-  | "REMINDER_SENT"
-  | "PARTIAL"
-  | "PAID"
-  | "WRITTEN_OFF";
+export type CollectionStatus = "NEW" | "REMINDER_SENT" | "PARTIAL" | "PAID" | "WRITTEN_OFF";
 
 export interface Collection {
   id: string;
@@ -116,8 +68,6 @@ export interface Collection {
   dueDate: string;
   notes?: string;
 }
-
-// ------------ עמלות ------------
 
 export interface CommissionAgreement {
   id: string;
@@ -139,8 +89,6 @@ export interface CommissionEntry {
   finalCommission: number;
 }
 
-// ------------ אישורי קיום ------------
-
 export type CertificateMode = "NORMAL" | "REQUESTOR";
 
 export interface Certificate {
@@ -156,8 +104,6 @@ export interface Certificate {
   createdAt: string;
   createdByUserId: string;
 }
-
-// ------------ מסמכים ------------
 
 export type DocumentSource = "COMPANY" | "AGENCY";
 
@@ -181,8 +127,6 @@ export interface DocumentMeta {
   fileUrl: string;
 }
 
-// ------------ חוקים / חוזרים ------------
-
 export interface Regulation {
   id: string;
   title: string;
@@ -191,8 +135,6 @@ export interface Regulation {
   domainTags: string[];
   fileUrl: string;
 }
-
-// ------------ עובדים / חופשות ------------
 
 export interface Employee {
   id: string;
@@ -216,50 +158,25 @@ export interface EmployeeTimeOff {
   createdAt: string;
 }
 
-// ==================================
-// CRM – לידים
-// ==================================
-
 export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
-
-export type LeadChannel =
-  | "PHONE"
-  | "WHATSAPP"
-  | "EMAIL"
-  | "SMS"
-  | "MEETING";
 
 export interface Lead {
   id: string;
   name: string;
   phone?: string;
   email?: string;
-  source?: string; // פייסבוק / הפניה / אתר...
+  source?: string;
   status: LeadStatus;
-  createdAt: string; // yyyy-mm-dd
-
+  createdAt: string;
   estimatedAnnualPremium?: number;
-  nextActionDate?: string; // yyyy-mm-dd
+  nextActionDate?: string;
   nextActionNotes?: string;
-  lastChannel?: LeadChannel;
-
+  lastChannel?: string;
   notes?: string;
-
   assignedToUserId?: string;
 }
 
-// ==================================
-// משימות
-// ==================================
-
-export type TaskKind =
-  | "LEAD"
-  | "RENEWAL"
-  | "COLLECTION"
-  | "CARRIER_REQUEST"
-  | "CERTIFICATE"
-  | "SERVICE"
-  | "OTHER";
+export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "SERVICE" | "OTHER";
 
 export type TaskStatus =
   | "OPEN"
@@ -276,99 +193,14 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-
   kind: TaskKind;
   status: TaskStatus;
   priority: TaskPriority;
-
   assignedToUserId: string;
   createdByUserId: string;
-  createdAt: string; // yyyy-mm-dd
-  dueDate: string; // yyyy-mm-dd
-
+  createdAt: string;
+  dueDate: string;
   relatedClientName?: string;
-
   requiresManagerReview?: boolean;
   managerApprovedAt?: string;
 }
-
-  | "HORSE"
-  | "FARM"
-  | "INSTRUCTOR"
-  | "TRAINER"
-  | "OTHER";
-
-// ------------ מבוטחים / פוליסות ------------
-
-export interface Client {
-  id: string;
-  name: string;
-  idNumber: string; // ת"ז / ח"פ
-  businessName?: string;
-  companyNumber?: string;
-  homeAddress?: string;
-  businessAddress?: string;
-  phone?: string;
-  email?: string;
-}
-
-export interface Policy {
-  id: string;
-  clientId: string;
-  companyId: CompanyCode;
-  productType: ProductType;
-  policyNumber: string;
-  startDate: string; // yyyy-mm-dd
-  endDate: string;
-  annualPremium: number;
-  notes?: string;
-}
-
-// ------------ חידושים ------------
-
-export type RenewalStatus =
-  | "NEW"
-  | "IN_PROGRESS"
-  | "QUOTED"
-  | "WAITING_CLIENT"
-  | "COMPLETED"
-  | "CANCELLED";
-
-export interface Renewal {
-  id: string;
-  policyId: string;
-  clientId: string;
-  assignedToUserId: string;
-  expectedRenewalDate: string;
-  previousPremium?: number;
-  expectedPremium?: number;
-  status: RenewalStatus;
-  notes?: string;
-}
-
-// ------------ גבייה ------------
-
-export type CollectionStatus =
-  | "NEW"
-  | "REMINDER_SENT"
-  | "PARTIAL"
-  | "PAID"
-  | "WRITTEN_OFF";
-
-export interface Collection {
-  id: string;
-  policyId: string;
-  clientId: string;
-  amountToCollect: number;
-  status: CollectionStatus;
-  assignedToUserId: string;
-  dueDate: string;
-  notes?: string;
-}
-
-// ------------ עמלות ------------
-
-export interface CommissionAgreement {
-  id: string;
-  companyId: CompanyCode;
-  productType: ProductType;
