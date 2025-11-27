@@ -1,7 +1,8 @@
-import { DollarSign, TrendingUp, AlertTriangle } from "lucide-react";
+import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -10,101 +11,179 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CreditCard, DollarSign, AlertCircle, TrendingUp, Filter, Send } from "lucide-react";
 
 const Collections = () => {
+  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+
   const collections = [
-    { id: 1, client: "דני אלמוג", policy: "רכב מקיף", amount: "₪3,500", dueDate: "01/12/2025", daysOverdue: 0, status: "current" },
-    { id: 2, client: "מיכל ברקוביץ", policy: "דירה", amount: "₪1,200", dueDate: "25/11/2025", daysOverdue: 5, status: "overdue" },
-    { id: 3, client: "אבי גרינברג", policy: "בריאות", amount: "₪2,800", dueDate: "15/11/2025", daysOverdue: 15, status: "overdue" },
-    { id: 4, client: "לאה הרצוג", policy: "עסק", amount: "₪5,400", dueDate: "10/12/2025", daysOverdue: 0, status: "upcoming" },
-    { id: 5, client: "יונתן זיו", policy: "חיים", amount: "₪4,200", dueDate: "05/11/2025", daysOverdue: 25, status: "overdue" },
+    { id: 1, client: "דוד כהן", policy: "12345", company: "מנורה", amount: 2500, dueDate: "2024-12-15", status: "overdue", daysOverdue: 12 },
+    { id: 2, client: "שרה לוי", policy: "12346", company: "הכשרה", amount: 1200, dueDate: "2024-12-20", status: "overdue", daysOverdue: 7 },
+    { id: 3, client: "יוסי אברהם", policy: "12347", company: "מנורה", amount: 5200, dueDate: "2025-01-05", status: "pending", daysOverdue: 0 },
+    { id: 4, client: "רחל מזרחי", policy: "12348", company: "הכשרה", amount: 3100, dueDate: "2024-12-01", status: "reminder", daysOverdue: 26 },
+    { id: 5, client: "משה גולן", policy: "12349", company: "מנורה", amount: 7800, dueDate: "2024-12-25", status: "paid", daysOverdue: 0 },
   ];
+
+  const filtered = collections.filter((c) => {
+    if (statusFilter === "ALL") return true;
+    return c.status === statusFilter;
+  });
+
+  const totalRevenue = collections.filter((c) => c.status === "paid").reduce((sum, c) => sum + c.amount, 0);
+  const openDebts = collections.filter((c) => c.status !== "paid").reduce((sum, c) => sum + c.amount, 0);
+  const overdueCount = collections.filter((c) => c.status === "overdue").length;
 
   const getStatusBadge = (status: string, daysOverdue: number) => {
     switch (status) {
-      case "current":
+      case "paid":
         return <Badge className="bg-success text-success-foreground">שולם</Badge>;
-      case "upcoming":
-        return <Badge className="bg-primary text-primary-foreground">קרוב</Badge>;
+      case "pending":
+        return <Badge variant="secondary">ממתין</Badge>;
+      case "reminder":
+        return <Badge variant="default">נשלחה תזכורת</Badge>;
       case "overdue":
-        return <Badge className="bg-destructive text-destructive-foreground">איחור {daysOverdue} ימים</Badge>;
+        return (
+          <Badge variant="destructive">
+            באיחור {daysOverdue} ימים
+          </Badge>
+        );
       default:
-        return <Badge>{status}</Badge>;
+        return <Badge variant="outline">{status}</Badge>;
     }
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fade-in" dir="rtl">
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">גבייה</h1>
-        <p className="text-muted-foreground">ניהול תשלומים וגבייה מלקוחות</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">גבייה ותשלומים</h1>
+        <p className="text-muted-foreground text-lg">
+          מעקב אחר תשלומים, חובות פתוחים ותזכורות
+        </p>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">הכנסות החודש</CardTitle>
-            <TrendingUp className="h-4 w-4 text-success" />
+      {/* סטטיסטיקות */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-success">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              הכנסות החודש
+            </CardTitle>
+            <DollarSign className="h-5 w-5 text-success" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₪187,400</div>
-            <p className="text-xs text-muted-foreground">+15% מהחודש שעבר</p>
+            <div className="text-3xl font-bold text-success">
+              ₪{totalRevenue.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">תשלומים שהתקבלו</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">חובות פתוחים</CardTitle>
-            <DollarSign className="h-4 w-4 text-warning" />
+        <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-warning">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              חובות פתוחים
+            </CardTitle>
+            <CreditCard className="h-5 w-5 text-warning" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₪34,200</div>
-            <p className="text-xs text-muted-foreground">23 לקוחות</p>
+            <div className="text-3xl font-bold text-warning">
+              ₪{openDebts.toLocaleString()}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">ממתינים לתשלום</p>
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">איחורים</CardTitle>
-            <AlertTriangle className="h-4 w-4 text-destructive" />
+        <Card className="hover:shadow-lg transition-all duration-300 border-l-4 border-l-destructive">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              תשלומים באיחור
+            </CardTitle>
+            <AlertCircle className="h-5 w-5 text-destructive" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">₪11,500</div>
-            <p className="text-xs text-muted-foreground">דורש טיפול מיידי</p>
+            <div className="text-3xl font-bold text-destructive">{overdueCount}</div>
+            <p className="text-xs text-muted-foreground mt-1">דורשים טיפול מיידי</p>
           </CardContent>
         </Card>
       </div>
 
+      {/* פילטר */}
       <Card>
         <CardContent className="pt-6">
+          <div className="flex items-center gap-4">
+            <Filter className="h-5 w-5 text-muted-foreground" />
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-[200px]">
+                <SelectValue placeholder="כל הסטטוסים" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">כל הסטטוסים</SelectItem>
+                <SelectItem value="pending">ממתין</SelectItem>
+                <SelectItem value="reminder">נשלחה תזכורת</SelectItem>
+                <SelectItem value="overdue">באיחור</SelectItem>
+                <SelectItem value="paid">שולם</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* טבלת גבייה */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CreditCard className="h-5 w-5" />
+            רשימת תשלומים ({filtered.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead>לקוח</TableHead>
-                <TableHead>סוג פוליסה</TableHead>
+                <TableHead>מספר פוליסה</TableHead>
+                <TableHead>חברה</TableHead>
                 <TableHead>סכום</TableHead>
-                <TableHead>תאריך פירעון</TableHead>
+                <TableHead>תאריך יעד</TableHead>
                 <TableHead>סטטוס</TableHead>
                 <TableHead>פעולות</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {collections.map((item) => (
-                <TableRow key={item.id}>
-                  <TableCell className="font-medium">{item.client}</TableCell>
-                  <TableCell>{item.policy}</TableCell>
-                  <TableCell className="font-bold text-primary">{item.amount}</TableCell>
-                  <TableCell>{item.dueDate}</TableCell>
-                  <TableCell>{getStatusBadge(item.status, item.daysOverdue)}</TableCell>
+              {filtered.map((collection) => (
+                <TableRow
+                  key={collection.id}
+                  className={`transition-colors ${collection.status === "overdue" ? "bg-destructive/5 hover:bg-destructive/10" : "hover:bg-muted/50"}`}
+                >
+                  <TableCell className="font-medium">{collection.client}</TableCell>
+                  <TableCell>{collection.policy}</TableCell>
                   <TableCell>
-                    <Button variant="outline" size="sm">
-                      {item.status === "overdue" ? "שלח תזכורת" : "צפייה"}
-                    </Button>
+                    <Badge variant="outline">{collection.company}</Badge>
+                  </TableCell>
+                  <TableCell className="font-bold text-primary">
+                    ₪{collection.amount.toLocaleString()}
+                  </TableCell>
+                  <TableCell>{collection.dueDate}</TableCell>
+                  <TableCell>
+                    {getStatusBadge(collection.status, collection.daysOverdue)}
+                  </TableCell>
+                  <TableCell>
+                    {collection.status !== "paid" && (
+                      <Button variant="outline" size="sm" className="gap-2 hover:scale-105 transition-transform">
+                        <Send className="h-3 w-3" />
+                        שלח תזכורת
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
+          {filtered.length === 0 && (
+            <p className="text-center text-muted-foreground py-8">
+              אין תשלומים לפי הסינון הנוכחי
+            </p>
+          )}
         </CardContent>
       </Card>
     </div>

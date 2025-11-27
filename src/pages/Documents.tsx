@@ -1,36 +1,49 @@
-import { FileText, Upload, Search } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { FolderOpen, FileText, Download, Search, Upload } from "lucide-react";
 
 const Documents = () => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [typeFilter, setTypeFilter] = useState<string>("ALL");
+
   const documents = [
-    { id: 1, name: "פוליסת רכב - דוד כהן.pdf", type: "policy", client: "דוד כהן", date: "10/12/2025", size: "245 KB" },
-    { id: 2, name: "הצעת מחיר - שרה לוי.pdf", type: "quote", client: "שרה לוי", date: "09/12/2025", size: "178 KB" },
-    { id: 3, name: "טופס תביעה - יוסי אברהם.pdf", type: "claim", client: "יוסי אברהם", date: "08/12/2025", size: "412 KB" },
-    { id: 4, name: "אישור ביטוח - רחל מזרחי.pdf", type: "certificate", client: "רחל מזרחי", date: "07/12/2025", size: "156 KB" },
-    { id: 5, name: "חוזה - משה גולן.pdf", type: "contract", client: "משה גולן", date: "06/12/2025", size: "523 KB" },
+    { id: 1, name: "ג'קט סוסים - מנורה 2024", type: "jacket", company: "מנורה", client: "דוד כהן", date: "2024-12-01", size: "2.3 MB" },
+    { id: 2, name: "הצעת מחיר חווה - הכשרה", type: "quote", company: "הכשרה", client: "שרה לוי", date: "2024-12-15", size: "1.8 MB" },
+    { id: 3, name: "תביעה - נזק לסוס", type: "claim", company: "מנורה", client: "יוסי אברהם", date: "2024-11-20", size: "3.1 MB" },
+    { id: 4, name: "אישור קיום - מדריכים", type: "certificate", company: "הכשרה", client: "רחל מזרחי", date: "2024-12-10", size: "0.5 MB" },
+    { id: 5, name: "פוליסה חווה - שנתית", type: "policy", company: "מנורה", client: "משה גולן", date: "2024-10-05", size: "4.2 MB" },
   ];
 
+  const filtered = documents.filter((doc) => {
+    if (typeFilter !== "ALL" && doc.type !== typeFilter) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return doc.name.toLowerCase().includes(q) || doc.client.toLowerCase().includes(q);
+    }
+    return true;
+  });
+
   const getTypeBadge = (type: string) => {
-    const types: { [key: string]: { label: string; className: string } } = {
-      policy: { label: "פוליסה", className: "bg-primary text-primary-foreground" },
-      quote: { label: "הצעה", className: "bg-secondary text-secondary-foreground" },
-      claim: { label: "תביעה", className: "bg-warning text-warning-foreground" },
-      certificate: { label: "אישור", className: "bg-success text-success-foreground" },
-      contract: { label: "חוזה", className: "bg-accent text-accent-foreground" },
+    const badges: Record<string, JSX.Element> = {
+      jacket: <Badge variant="default">ג׳קט</Badge>,
+      policy: <Badge className="bg-primary text-primary-foreground">פוליסה</Badge>,
+      quote: <Badge variant="secondary">הצעה</Badge>,
+      claim: <Badge variant="destructive">תביעה</Badge>,
+      certificate: <Badge className="bg-success text-success-foreground">אישור</Badge>,
     };
-    const typeInfo = types[type] || { label: type, className: "" };
-    return <Badge className={typeInfo.className}>{typeInfo.label}</Badge>;
+    return badges[type] || <Badge variant="outline">{type}</Badge>;
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 animate-fade-in" dir="rtl">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-foreground mb-2">מסמכים</h1>
-          <p className="text-muted-foreground">ניהול מסמכי הסוכנות</p>
+          <h1 className="text-4xl font-bold text-foreground mb-2">מסמכים</h1>
+          <p className="text-muted-foreground text-lg">ניהול מסמכי הסוכנות</p>
         </div>
         <Button className="gap-2">
           <Upload className="h-4 w-4" />
@@ -38,104 +51,52 @@ const Documents = () => {
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-5">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">487</p>
-                <p className="text-sm text-muted-foreground">סה"כ מסמכים</p>
-              </div>
-              <FileText className="h-6 w-6 text-foreground" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">142</p>
-                <p className="text-sm text-muted-foreground">פוליסות</p>
-              </div>
-              <FileText className="h-6 w-6 text-primary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">89</p>
-                <p className="text-sm text-muted-foreground">הצעות מחיר</p>
-              </div>
-              <FileText className="h-6 w-6 text-secondary" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">34</p>
-                <p className="text-sm text-muted-foreground">תביעות</p>
-              </div>
-              <FileText className="h-6 w-6 text-warning" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-2xl font-bold">222</p>
-                <p className="text-sm text-muted-foreground">אישורים</p>
-              </div>
-              <FileText className="h-6 w-6 text-success" />
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
       <Card>
         <CardContent className="pt-6">
-          <div className="mb-6">
-            <div className="relative">
+          <div className="flex gap-4">
+            <div className="relative flex-1">
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-              <Input placeholder="חיפוש מסמכים..." className="pr-10" />
+              <Input placeholder="חיפוש..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} className="pr-10" />
             </div>
+            <Select value={typeFilter} onValueChange={setTypeFilter}>
+              <SelectTrigger className="w-[180px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">כל הסוגים</SelectItem>
+                <SelectItem value="jacket">ג׳קט</SelectItem>
+                <SelectItem value="policy">פוליסה</SelectItem>
+                <SelectItem value="quote">הצעה</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
+        </CardContent>
+      </Card>
 
-          <div className="space-y-3">
-            {documents.map((doc) => (
-              <div key={doc.id} className="flex items-center justify-between p-4 border border-border rounded-lg hover:bg-accent transition-colors">
-                <div className="flex items-center gap-4 flex-1">
-                  <FileText className="h-8 w-8 text-primary" />
+      <div className="space-y-4">
+        {filtered.map((doc) => (
+          <Card key={doc.id} className="hover:shadow-lg transition-all">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <FileText className="h-6 w-6 text-primary" />
                   <div>
-                    <p className="font-medium text-foreground">{doc.name}</p>
-                    <div className="flex items-center gap-2 mt-1">
-                      {getTypeBadge(doc.type)}
-                      <span className="text-sm text-muted-foreground">{doc.client}</span>
-                    </div>
+                    <h3 className="font-bold">{doc.name}</h3>
+                    <p className="text-sm text-muted-foreground">{doc.client} • {doc.date}</p>
                   </div>
                 </div>
-                <div className="text-left flex items-center gap-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground">{doc.date}</p>
-                    <p className="text-sm text-muted-foreground">{doc.size}</p>
-                  </div>
-                  <Button variant="outline" size="sm">
+                <div className="flex items-center gap-3">
+                  {getTypeBadge(doc.type)}
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <Download className="h-4 w-4" />
                     הורד
                   </Button>
                 </div>
               </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
     </div>
   );
 };

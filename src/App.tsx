@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { Toaster } from "@/components/ui/sonner";
 import Layout from "./components/Layout";
 import Dashboard from "./pages/Dashboard";
 import Calculators from "./pages/Calculators";
@@ -15,7 +16,6 @@ import Regulations from "./pages/Regulations";
 import Employees from "./pages/Employees";
 import Commissions from "./pages/Commissions";
 import NotFound from "./pages/NotFound";
-import { useAuth } from "./context/AuthContext";
 
 const App: React.FC = () => {
   return (
@@ -38,6 +38,7 @@ const App: React.FC = () => {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Layout>
+      <Toaster />
     </BrowserRouter>
   );
 };
