@@ -38,7 +38,7 @@ const priorityClasses: Record<TaskPriority, string> = {
   CRITICAL: "border-red-600 text-red-700",
 };
 
-// בכוונה Record<string,string> כדי שלא יישבר אם נוסיף TYPE חדש
+// לא שוברים אם נוסיף סוג חדש
 const kindLabels: Record<string, string> = {
   LEAD: "ליד / לקוח חדש",
   RENEWAL: "חידוש",
@@ -63,7 +63,7 @@ const isDoneStatus = (s: TaskStatus) => s === "DONE" || s === "CANCELLED";
 
 const MyTasks: React.FC = () => {
   const { user } = useAuth();
-  const { tasks, updateTaskStatus } = useData();
+  const { tasks, updateTaskStatus, employees, addTask } = useData();
 
   if (!user) {
     return (
@@ -77,6 +77,50 @@ const MyTasks: React.FC = () => {
 
   const myTasks = useMemo(() => tasks.filter((t) => t.assignedToUserId === user.id), [tasks, user.id]);
 
+  // === טופס משימה חדשה ===
+  const [showNewTask, setShowNewTask] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newClient, setNewClient] = useState("");
+  const [newKind, setNewKind] = useState<string>("LEAD");
+  const [newPriority, setNewPriority] = useState<TaskPriority>("NORMAL");
+  const [newDueDate, setNewDueDate] = useState(todayStr);
+  const [newAssignedTo, setNewAssignedTo] = useState<string>(user.id);
+  const [newDescription, setNewDescription] = useState("");
+  const [newRequiresManagerReview, setNewRequiresManagerReview] = useState(false);
+
+  const handleCreateTask = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) {
+      alert("חובה למלא כותרת משימה");
+      return;
+    }
+
+    addTask({
+      title: newTitle.trim(),
+      description: newDescription.trim() || undefined,
+      kind: newKind,
+      priority: newPriority,
+      assignedToUserId: newAssignedTo,
+      createdByUserId: user.id,
+      createdAt: todayStr, // ייכתב שוב ב־DataContext אבל לא נורא
+      dueDate: newDueDate,
+      relatedClientName: newClient.trim() || undefined,
+      requiresManagerReview: newRequiresManagerReview || undefined,
+    });
+
+    // איפוס טופס
+    setShowNewTask(false);
+    setNewTitle("");
+    setNewClient("");
+    setNewKind("LEAD");
+    setNewPriority("NORMAL");
+    setNewDueDate(todayStr);
+    setNewAssignedTo(user.id);
+    setNewDescription("");
+    setNewRequiresManagerReview(false);
+  };
+
+  // === פילטרים ותצוגה ===
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "ALL">("OPEN");
   const [kindFilter, setKindFilter] = useState<string | "ALL">("ALL");
   const [priorityFilter, setPriorityFilter] = useState<TaskPriority | "ALL">("ALL");
@@ -131,11 +175,136 @@ const MyTasks: React.FC = () => {
 
   return (
     <div dir="rtl" className="space-y-6">
-      <h1 className="text-2xl font-bold text-slate-800">המשימות שלי</h1>
-      <p className="text-sm text-slate-600">
-        כאן אתה רואה את כל המשימות שהוקצו אליך – חידושים, לידים, גבייה, בקשות לחברות ביטוח ועוד. המטרה: שלא תלך לאיבוד
-        שום דבר.
-      </p>
+      {/* כותרת + כפתור משימה חדשה */}
+      <div className="flex items-center justify-between gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">המשימות שלי</h1>
+          <p className="text-sm text-slate-600">
+            כאן אתה רואה את כל המשימות שהוקצו אליך – חידושים, לידים, גבייה, בקשות לחברות ביטוח ועוד.
+          </p>
+        </div>
+        <button
+          type="button"
+          className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm shadow hover:bg-blue-700"
+          onClick={() => setShowNewTask((v) => !v)}
+        >
+          + משימה חדשה
+        </button>
+      </div>
+
+      {/* טופס משימה חדשה */}
+      {showNewTask && (
+        <section className="bg-white rounded-2xl shadow p-4 text-xs">
+          <h2 className="text-sm font-semibold mb-3">יצירת משימה חדשה</h2>
+          <form onSubmit={handleCreateTask} className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="flex flex-col">
+                <label className="mb-1 text-slate-600">כותרת משימה *</label>
+                <input
+                  className="border rounded-lg px-2 py-1"
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder="למשל: חידוש חוות X – לשלוח טיוטה למנורה"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-slate-600">לקוח</label>
+                <input
+                  className="border rounded-lg px-2 py-1"
+                  value={newClient}
+                  onChange={(e) => setNewClient(e.target.value)}
+                  placeholder="שם לקוח / חווה / חברה"
+                />
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-slate-600">עובד מטפל</label>
+                <select
+                  className="border rounded-lg px-2 py-1"
+                  value={newAssignedTo}
+                  onChange={(e) => setNewAssignedTo(e.target.value)}
+                >
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>
+                      {emp.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+              <div className="flex flex-col">
+                <label className="mb-1 text-slate-600">סוג משימה</label>
+                <select
+                  className="border rounded-lg px-2 py-1"
+                  value={newKind}
+                  onChange={(e) => setNewKind(e.target.value)}
+                >
+                  {Object.entries(kindLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-slate-600">עדיפות</label>
+                <select
+                  className="border rounded-lg px-2 py-1"
+                  value={newPriority}
+                  onChange={(e) => setNewPriority(e.target.value as TaskPriority)}
+                >
+                  {Object.entries(priorityLabels).map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex flex-col">
+                <label className="mb-1 text-slate-600">תאריך יעד</label>
+                <input
+                  type="date"
+                  className="border rounded-lg px-2 py-1"
+                  value={newDueDate}
+                  onChange={(e) => setNewDueDate(e.target.value)}
+                />
+              </div>
+              <label className="flex items-center gap-2 mt-5 text-slate-600">
+                <input
+                  type="checkbox"
+                  checked={newRequiresManagerReview}
+                  onChange={(e) => setNewRequiresManagerReview(e.target.checked)}
+                />
+                דורש אישור מנהל בסיום
+              </label>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="mb-1 text-slate-600">תיאור / הערות</label>
+              <textarea
+                className="border rounded-lg px-2 py-1 min-h-[60px]"
+                value={newDescription}
+                onChange={(e) => setNewDescription(e.target.value)}
+                placeholder="למשל: לשלוח טיוטה למנורה, לצרף פרוטוקול דירקטוריון, ולסמן לעצמי לחזור אליהם אם אין תשובה עד יום חמישי."
+              />
+            </div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                className="px-3 py-1 rounded-full border border-slate-300 text-slate-600"
+                onClick={() => setShowNewTask(false)}
+              >
+                ביטול
+              </button>
+              <button type="submit" className="px-4 py-1.5 rounded-full bg-blue-600 text-white">
+                שמור משימה
+              </button>
+            </div>
+          </form>
+        </section>
+      )}
 
       {/* כרטיסי סטטיסטיקה מהירה */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
@@ -157,7 +326,7 @@ const MyTasks: React.FC = () => {
         </div>
       </div>
 
-      {/* פילטרים בסגנון CRM */}
+      {/* פילטרים */}
       <section className="bg-white rounded-2xl shadow p-4 space-y-3 text-xs">
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex flex-col">
@@ -342,8 +511,8 @@ const MyTasks: React.FC = () => {
       </section>
 
       <p className="text-[11px] text-slate-400">
-        בהמשך נוכל להוסיף מכאן כפתורי וואטסאפ/טלפון/אימייל ישירות ללקוח, ותזכורות אוטומטיות ב-SMS – בדיוק כמו Focus /
-        באפי.
+        בהמשך נוסיף מכאן חיבור ל-SMS / וואטסאפ / באפי, ותזכורות אוטומטיות – כדי ששום חידוש או בקשה לחברת ביטוח לא יפלו
+        בין הכיסאות.
       </p>
     </div>
   );
