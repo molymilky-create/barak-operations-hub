@@ -16,7 +16,12 @@ export interface Company {
   name: string;
 }
 
-export type ProductType = "HORSE" | "FARM" | "INSTRUCTOR" | "TRAINER" | "OTHER";
+export type ProductType =
+  | "HORSE"
+  | "FARM"
+  | "INSTRUCTOR"
+  | "TRAINER"
+  | "OTHER";
 
 // ===== מבוטחים / פוליסות =====
 export interface Client {
@@ -44,7 +49,13 @@ export interface Policy {
 }
 
 // ===== חידושים =====
-export type RenewalStatus = "NEW" | "IN_PROGRESS" | "QUOTED" | "WAITING_CLIENT" | "COMPLETED" | "CANCELLED";
+export type RenewalStatus =
+  | "NEW"
+  | "IN_PROGRESS"
+  | "QUOTED"
+  | "WAITING_CLIENT"
+  | "COMPLETED"
+  | "CANCELLED";
 
 export interface Renewal {
   id: string;
@@ -59,7 +70,12 @@ export interface Renewal {
 }
 
 // ===== גבייה =====
-export type CollectionStatus = "NEW" | "REMINDER_SENT" | "PARTIAL" | "PAID" | "WRITTEN_OFF";
+export type CollectionStatus =
+  | "NEW"
+  | "REMINDER_SENT"
+  | "PARTIAL"
+  | "PAID"
+  | "WRITTEN_OFF";
 
 export interface Collection {
   id: string;
@@ -167,7 +183,13 @@ export interface EmployeeTimeOff {
 }
 
 // ===== משימות =====
-export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "OTHER";
+export type TaskKind =
+  | "LEAD"
+  | "RENEWAL"
+  | "COLLECTION"
+  | "CARRIER_REQUEST"
+  | "CERTIFICATE"
+  | "OTHER";
 
 export type TaskStatus =
   | "OPEN"
@@ -195,33 +217,3 @@ export interface Task {
   dueDate: string; // yyyy-mm-dd
 
   relatedClientName?: string;
-
-  requiresManagerReview?: boolean;
-  managerApprovedAt?: string; // yyyy-mm-dd
-}
-
-// ===== לידים =====
-export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING";
-
-export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
-
-export interface Lead {
-  id: string;
-  name: string;
-  phone?: string;
-  email?: string;
-  source?: string;
-
-  status: LeadStatus;
-  estimatedAnnualPremium?: number;
-
-  nextActionDate?: string; // yyyy-mm-dd
-  nextActionNotes?: string;
-
-  lastChannel?: LeadChannel;
-
-  createdAt: string; // yyyy-mm-dd
-  assignedToUserId?: string;
-
-  notes?: string;
-}
