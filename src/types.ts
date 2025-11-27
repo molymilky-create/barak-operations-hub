@@ -20,12 +20,7 @@ export interface Company {
   name: string;
 }
 
-export type ProductType =
-  | "HORSE"
-  | "FARM"
-  | "INSTRUCTOR"
-  | "TRAINER"
-  | "OTHER";
+export type ProductType = "HORSE" | "FARM" | "INSTRUCTOR" | "TRAINER" | "OTHER";
 
 // ------------ מבוטחים / פוליסות ------------
 
@@ -55,13 +50,7 @@ export interface Policy {
 
 // ------------ חידושים ------------
 
-export type RenewalStatus =
-  | "NEW"
-  | "IN_PROGRESS"
-  | "QUOTED"
-  | "WAITING_CLIENT"
-  | "COMPLETED"
-  | "CANCELLED";
+export type RenewalStatus = "NEW" | "IN_PROGRESS" | "QUOTED" | "WAITING_CLIENT" | "COMPLETED" | "CANCELLED";
 
 export interface Renewal {
   id: string;
@@ -77,12 +66,7 @@ export interface Renewal {
 
 // ------------ גבייה ------------
 
-export type CollectionStatus =
-  | "NEW"
-  | "REMINDER_SENT"
-  | "PARTIAL"
-  | "PAID"
-  | "WRITTEN_OFF";
+export type CollectionStatus = "NEW" | "REMINDER_SENT" | "PARTIAL" | "PAID" | "WRITTEN_OFF";
 
 export interface Collection {
   id: string;
@@ -175,4 +159,86 @@ export interface Regulation {
 export interface Employee {
   id: string;
   name: string;
-  em
+  email: string;
+  role: Role;
+  position?: string;
+  hireDate?: string;
+  managerId?: string;
+}
+
+export type TimeOffStatus = "PENDING" | "APPROVED" | "REJECTED";
+
+export interface EmployeeTimeOff {
+  id: string;
+  employeeId: string;
+  from: string;
+  to: string;
+  status: TimeOffStatus;
+  reason?: string;
+  createdAt: string;
+}
+
+// ==================================
+// CRM – לידים
+// ==================================
+
+export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
+
+export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING";
+
+export interface Lead {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  source?: string; // פייסבוק / הפניה / אתר...
+  status: LeadStatus;
+  createdAt: string; // yyyy-mm-dd
+
+  estimatedAnnualPremium?: number;
+  nextActionDate?: string; // yyyy-mm-dd
+  nextActionNotes?: string;
+  lastChannel?: LeadChannel;
+
+  notes?: string;
+
+  // לשימוש עתידי (אפשרי)
+  assignedToUserId?: string;
+}
+
+// ==================================
+// משימות
+// ==================================
+
+export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "SERVICE" | "OTHER";
+
+export type TaskStatus =
+  | "OPEN"
+  | "IN_PROGRESS"
+  | "WAITING_CLIENT"
+  | "WAITING_COMPANY"
+  | "WAITING_MANAGER_REVIEW"
+  | "DONE"
+  | "CANCELLED";
+
+export type TaskPriority = "LOW" | "NORMAL" | "HIGH" | "CRITICAL";
+
+export interface Task {
+  id: string;
+  title: string;
+  description?: string;
+
+  kind: TaskKind;
+  status: TaskStatus;
+  priority: TaskPriority;
+
+  assignedToUserId: string;
+  createdByUserId: string;
+  createdAt: string; // yyyy-mm-dd
+  dueDate: string; // yyyy-mm-dd
+
+  relatedClientName?: string;
+
+  requiresManagerReview?: boolean;
+  managerApprovedAt?: string;
+}
