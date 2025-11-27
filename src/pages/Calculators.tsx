@@ -66,9 +66,24 @@ const Calculators = () => {
     setStartDate(value);
     if (value) {
       const start = new Date(value);
+      const day = start.getDate();
+      
+      // יצירת תאריך סיום - שנה קדימה
       const end = new Date(start);
       end.setFullYear(end.getFullYear() + 1);
-      end.setDate(end.getDate() - 1);
+      
+      // אם היום הוא 1-14, תאריך הסיום הוא היום האחרון של החודש הקודם
+      // אם היום הוא 15+, תאריך הסיום הוא היום האחרון של אותו החודש
+      if (day < 15) {
+        // חודש קודם - יום אחרון
+        end.setDate(1); // תחילה הולכים ליום הראשון
+        end.setDate(0); // ואז יום 0 = יום אחרון של החודש הקודם
+      } else {
+        // אותו חודש - יום אחרון
+        end.setMonth(end.getMonth() + 1);
+        end.setDate(0); // יום 0 של החודש הבא = יום אחרון של החודש הנוכחי
+      }
+      
       setEndDate(end.toISOString().slice(0, 10));
     }
   };
