@@ -4,14 +4,14 @@ import { useData } from "../context/DataContext";
 import { useAuth } from "../context/AuthContext";
 import type { Task, TaskStatus, TaskKind, TaskPriority } from "../types";
 
-const statusLabels: Record<TaskStatus, string> = {
-  OPEN: "פתוח",
-  IN_PROGRESS: "בטיפול",
-  WAITING_CLIENT: "ממתין ללקוח",
-  WAITING_COMPANY: "ממתין לחברת ביטוח",
-  WAITING_MANAGER_REVIEW: "ממתין לאישור מנהל",
-  DONE: "הושלם",
-  CANCELLED: "בוטל",
+const kindLabels: Record<TaskKind, string> = {
+  LEAD: "ליד",
+  RENEWAL: "חידוש",
+  COLLECTION: "גבייה",
+  CARRIER_REQUEST: "בקשה לחברת ביטוח",
+  CERTIFICATE: "אישור קיום",
+  SERVICE: "שירות / טיפול שוטף",
+  OTHER: "אחר",
 };
 
 const kindLabels: Record<TaskKind, string> = {
