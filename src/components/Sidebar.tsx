@@ -1,6 +1,7 @@
 // src/components/Sidebar.tsx
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import barakLogo from "../assets/barak-logo.png";
 import {
   LayoutDashboard,
   Calculator,
@@ -29,15 +30,15 @@ const Sidebar = () => {
   return (
     <aside className="w-72 bg-sidebar border-l border-sidebar-border flex flex-col shadow-lg">
       <div className="p-6 border-b border-sidebar-border">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-center">
           <img
-            src="https://barak-korb.co.il/wp-content/uploads/2024/01/logo.png"
+            src={barakLogo}
             alt="ברק ביטוחים"
-            className="h-12 object-contain"
+            className="h-20 object-contain"
           />
         </div>
-        <p className="mt-3 text-sm text-sidebar-foreground/80 leading-relaxed">
-          מערכת ניהול ומחשבוני ביטוח מתקדמת
+        <p className="mt-3 text-sm text-sidebar-foreground/90 text-center leading-relaxed font-medium">
+          מערכת ניהול מתקדמת
         </p>
       </div>
       <nav className="flex-1 p-4 space-y-1.5 text-right overflow-y-auto">
