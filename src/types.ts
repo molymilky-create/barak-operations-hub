@@ -182,6 +182,30 @@ export interface EmployeeTimeOff {
   createdAt: string; // ISO
 }
 
+// ===== לידים =====
+export type LeadStatus =
+  | "NEW"
+  | "CONTACTED"
+  | "QUOTED"
+  | "WON"
+  | "LOST";
+
+export interface Lead {
+  id: string;
+  name: string;
+  phone?: string;
+  email?: string;
+  source?: string;
+  status: LeadStatus;
+  estimatedAnnualPremium?: number;
+  nextActionDate?: string; // yyyy-mm-dd
+  nextActionNotes?: string;
+  lastChannel?: "PHONE" | "EMAIL" | "WHATSAPP" | "IN_PERSON" | "OTHER";
+  createdAt: string; // yyyy-mm-dd
+  assignedToUserId?: string;
+  notes?: string;
+}
+
 // ===== משימות =====
 export type TaskKind =
   | "LEAD"
@@ -189,6 +213,7 @@ export type TaskKind =
   | "COLLECTION"
   | "CARRIER_REQUEST"
   | "CERTIFICATE"
+  | "SERVICE"
   | "OTHER";
 
 export type TaskStatus =
@@ -217,3 +242,6 @@ export interface Task {
   dueDate: string; // yyyy-mm-dd
 
   relatedClientName?: string;
+  requiresManagerReview?: boolean;
+  managerApprovedAt?: string; // yyyy-mm-dd
+}
