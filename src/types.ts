@@ -22,7 +22,7 @@ export interface Employee {
 }
 
 // משימות
-export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "SERVICE" | "OTHER";
+export type TaskKind = "LEAD" | "RENEWAL" | "COLLECTION" | "CARRIER_REQUEST" | "CERTIFICATE" | "OTHER";
 
 export type TaskStatus =
   | "OPEN"
@@ -53,21 +53,23 @@ export interface Task {
 
   requiresManagerReview?: boolean;
   managerApprovedAt?: string;
+
+  // אפשרות לקשר ליד / פוליסה וכו' בהמשך
+  leadId?: string;
+  policyId?: string;
 }
 
 // לידים
 export type LeadStatus = "NEW" | "CONTACTED" | "QUOTED" | "WON" | "LOST";
 
-export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING" | "OTHER";
+export type LeadChannel = "PHONE" | "WHATSAPP" | "EMAIL" | "SMS" | "MEETING";
 
 export interface Lead {
   id: string;
   name: string;
   phone?: string;
   email?: string;
-  source?: string; // פייסבוק, הפניה, אתר...
-  notes?: string;
-
+  source?: string; // פייסבוק / הפניה / אתר...
   status: LeadStatus;
   estimatedAnnualPremium?: number;
 
@@ -76,5 +78,5 @@ export interface Lead {
   lastChannel?: LeadChannel;
 
   createdAt: string; // yyyy-mm-dd
-  assignedToUserId?: string; // מי מטפל בליד
+  assignedToUserId?: string;
 }
