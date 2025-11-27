@@ -1,30 +1,165 @@
 // src/context/DataContext.tsx
 import React, { createContext, useContext, useState } from "react";
-import type { Employee, Task, TaskStatus, Lead, LeadStatus } from "../types";
+import {
+  Client,
+  Policy,
+  Renewal,
+  Collection,
+  Certificate,
+  DocumentMeta,
+  Regulation,
+  CommissionAgreement,
+  CommissionEntry,
+  Employee,
+  EmployeeTimeOff,
+  Task,
+  TaskStatus,
+  Lead,
+  LeadStatus,
+} from "../types";
 
 interface DataContextValue {
+  clients: Client[];
+  policies: Policy[];
+  renewals: Renewal[];
+  collections: Collection[];
+  certificates: Certificate[];
+  documents: DocumentMeta[];
+  regulations: Regulation[];
+  commissionAgreements: CommissionAgreement[];
+  commissions: CommissionEntry[];
   employees: Employee[];
-
-  // משימות
-  tasks: Task[];
-  addTask: (data: Omit<Task, "id" | "status" | "createdAt">) => void;
-  updateTaskStatus: (id: string, status: TaskStatus) => void;
+  timeOffRequests: EmployeeTimeOff[];
 
   // לידים
   leads: Lead[];
-  addLead: (data: Omit<Lead, "id" | "status" | "createdAt">) => void;
+  addLead: (data: Omit<Lead, "id" | "createdAt" | "status">) => void;
   updateLeadStatus: (id: string, status: LeadStatus) => void;
+
+  // משימות
+  tasks: Task[];
+  addTask: (data: Omit<Task, "id" | "createdAt" | "status" | "managerApprovedAt">) => void;
+  updateTaskStatus: (id: string, status: TaskStatus) => void;
+
+  addCertificate: (c: Omit<Certificate, "id" | "createdAt">) => void;
+  addTimeOffRequest: (t: Omit<EmployeeTimeOff, "id" | "createdAt">) => void;
 }
 
 const DataContext = createContext<DataContextValue | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // עובדים לדוגמה
+  const [clients] = useState<Client[]>([
+    {
+      id: "c1",
+      name: "ישראל ישראלי",
+      idNumber: "123456789",
+      businessName: 'חוות לדוגמה בע"מ',
+      companyNumber: "515555555",
+      businessAddress: "רח' החווה 1, מושב לדוגמה",
+      phone: "050-0000000",
+      email: "farm@example.com",
+    },
+  ]);
+
+  const [policies] = useState<Policy[]>([
+    {
+      id: "p1",
+      clientId: "c1",
+      companyId: "MENORA",
+      productType: "FARM",
+      policyNumber: "MN-123456",
+      startDate: "2025-01-01",
+      endDate: "2025-12-31",
+      annualPremium: 10000,
+      notes: "חוות סוסים – פוליסת עסק",
+    },
+  ]);
+
+  const [renewals] = useState<Renewal[]>([
+    {
+      id: "r1",
+      policyId: "p1",
+      clientId: "c1",
+      assignedToUserId: "u2",
+      expectedRenewalDate: "2025-12-01",
+      previousPremium: 9000,
+      expectedPremium: 10000,
+      status: "NEW",
+    },
+  ]);
+
+  const [collections] = useState<Collection[]>([
+    {
+      id: "col1",
+      policyId: "p1",
+      clientId: "c1",
+      amountToCollect: 10000,
+      status: "NEW",
+      assignedToUserId: "u2",
+      dueDate: "2025-02-10",
+    },
+  ]);
+
+  const [certificates, setCertificates] = useState<Certificate[]>([]);
+
+  const [documents] = useState<DocumentMeta[]>([
+    {
+      id: "d1",
+      title: "ג'קט פוליסת עסק - מנורה",
+      companyId: "MENORA",
+      productTypes: ["FARM"],
+      source: "COMPANY",
+      kind: "JACKET",
+      fileUrl: "/docs/menora/business-jacket.pdf",
+    },
+    {
+      id: "d2",
+      title: "כללי בטיחות בחווה",
+      source: "AGENCY",
+      kind: "SAFETY",
+      productTypes: ["FARM", "HORSE"],
+      fileUrl: "/docs/agency/farm-safety.pdf",
+    },
+  ]);
+
+  const [regulations] = useState<Regulation[]>([
+    {
+      id: "reg1",
+      title: "הנחיות ביטוח חוות סוסים",
+      domainTags: ["סוסים", "חוות", "אחריות"],
+      fileUrl: "/docs/regulations/farm.pdf",
+    },
+  ]);
+
+  const [commissionAgreements] = useState<CommissionAgreement[]>([
+    {
+      id: "ca1",
+      companyId: "MENORA",
+      productType: "FARM",
+      description: "חוות סוסים – מנורה",
+      ratePercent: 15,
+      baseType: "NET",
+    },
+  ]);
+
+  const [commissions] = useState<CommissionEntry[]>([
+    {
+      id: "ce1",
+      policyId: "p1",
+      clientId: "c1",
+      companyId: "MENORA",
+      productType: "FARM",
+      grossPremium: 10000,
+      netPremium: 9500,
+      finalCommission: 1425,
+    },
+  ]);
+
   const [employees] = useState<Employee[]>([
     {
       id: "u1",
       name: "מנהל",
-      email: "admin@barak-insurance.local",
+      email: "admin@barak-korb.co.il",
       role: "admin",
       position: "מנהל סוכנות",
       hireDate: "2010-01-01",
@@ -32,11 +167,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     {
       id: "u2",
       name: "עובד",
-      email: "user@barak-insurance.local",
+      email: "user@barak-korb.co.il",
       role: "user",
-      position: "מטפל חידושים ולידים",
+      position: "מטפל חידושים",
       hireDate: "2022-05-10",
       managerId: "u1",
+    },
+  ]);
+
+  const [timeOffRequests, setTimeOffRequests] = useState<EmployeeTimeOff[]>([
+    {
+      id: "to1",
+      employeeId: "u2",
+      from: "2025-03-01",
+      to: "2025-03-05",
+      status: "APPROVED",
+      reason: "חופשה משפחתית",
+      createdAt: "2025-01-15",
     },
   ]);
 
@@ -74,31 +221,44 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [leads, setLeads] = useState<Lead[]>([
     {
       id: "L1",
-      name: "רותם כהן",
+      name: 'חוות השמש בע"מ',
       phone: "050-1234567",
-      email: "rotem@example.com",
-      source: "פייסבוק – חוות סוסים",
+      email: "farm@sun-example.com",
+      source: "הפניה מחווה אחרת",
       status: "CONTACTED",
-      estimatedAnnualPremium: 7500,
-      nextActionDate: "2025-11-28",
-      nextActionNotes: "לשלוח הצעה לחוות + מדריכת רכיבה עד יום חמישי",
-      lastChannel: "WHATSAPP",
+      estimatedAnnualPremium: 12000,
+      nextActionDate: "2025-12-01",
+      nextActionNotes: "לחזור עם טיוטה מנורה והכשרה להשוואה.",
+      lastChannel: "PHONE",
       createdAt: "2025-11-20",
       assignedToUserId: "u2",
+      notes: "מעוניינים גם בביטוח מדריכים.",
     },
     {
       id: "L2",
-      name: "משק ליאור - ביטוח חווה",
+      name: "מאמן כושר – עידן כהן",
       phone: "052-9876543",
-      source: "הפניה מסוכן אחר",
+      source: "פייסבוק",
       status: "NEW",
-      createdAt: "2025-11-23",
-      estimatedAnnualPremium: 12000,
-      assignedToUserId: "u2",
+      createdAt: "2025-11-25",
+      lastChannel: "WHATSAPP",
+      notes: "שאל לגבי ביטוח מאמן אישי בבית הלקוח.",
     },
   ]);
 
-  // --- משימות ---
+  // פונקציות
+
+  const addCertificate = (c: Omit<Certificate, "id" | "createdAt">) => {
+    const id = `cert_${Date.now()}`;
+    const createdAt = new Date().toISOString();
+    setCertificates((prev) => [...prev, { ...c, id, createdAt }]);
+  };
+
+  const addTimeOffRequest = (t: Omit<EmployeeTimeOff, "id" | "createdAt">) => {
+    const id = `to_${Date.now()}`;
+    const createdAt = new Date().toISOString();
+    setTimeOffRequests((prev) => [...prev, { ...t, id, createdAt }]);
+  };
 
   const addTask: DataContextValue["addTask"] = (data) => {
     const id = `task_${Date.now()}`;
@@ -131,8 +291,6 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
-  // --- לידים ---
-
   const addLead: DataContextValue["addLead"] = (data) => {
     const id = `lead_${Date.now()}`;
     const createdAt = new Date().toISOString().slice(0, 10);
@@ -154,13 +312,25 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   return (
     <DataContext.Provider
       value={{
+        clients,
+        policies,
+        renewals,
+        collections,
+        certificates,
+        documents,
+        regulations,
+        commissionAgreements,
+        commissions,
         employees,
-        tasks,
-        addTask,
-        updateTaskStatus,
+        timeOffRequests,
         leads,
         addLead,
         updateLeadStatus,
+        tasks,
+        addTask,
+        updateTaskStatus,
+        addCertificate,
+        addTimeOffRequest,
       }}
     >
       {children}
