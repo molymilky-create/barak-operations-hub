@@ -1,14 +1,16 @@
 // src/context/DataContext.tsx
 import React, { createContext, useContext, useState } from "react";
-import type { Employee, Task, TaskStatus, TaskPriority, TaskKind, Lead, LeadStatus } from "../types";
+import type { Employee, Task, TaskStatus, Lead, LeadStatus } from "../types";
 
 interface DataContextValue {
   employees: Employee[];
 
+  // משימות
   tasks: Task[];
   addTask: (data: Omit<Task, "id" | "status" | "createdAt">) => void;
   updateTaskStatus: (id: string, status: TaskStatus) => void;
 
+  // לידים
   leads: Lead[];
   addLead: (data: Omit<Lead, "id" | "status" | "createdAt">) => void;
   updateLeadStatus: (id: string, status: LeadStatus) => void;
@@ -72,32 +74,32 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [leads, setLeads] = useState<Lead[]>([
     {
       id: "L1",
-      name: 'חוות השמש בע"מ',
+      name: "רותם כהן",
       phone: "050-1234567",
-      email: "farm@example.com",
-      source: "הפניה מחווה אחרת",
-      notes: "מעוניינים בביטוח חווה + מדריכים, דגש על חבות מעבידים.",
+      email: "rotem@example.com",
+      source: "פייסבוק – חוות סוסים",
       status: "CONTACTED",
-      estimatedAnnualPremium: 12000,
-      nextActionDate: "2025-12-01",
-      nextActionNotes: "לחזור עם טיוטה מנורה והכשרה להשוואה.",
-      lastChannel: "PHONE",
+      estimatedAnnualPremium: 7500,
+      nextActionDate: "2025-11-28",
+      nextActionNotes: "לשלוח הצעה לחוות + מדריכת רכיבה עד יום חמישי",
+      lastChannel: "WHATSAPP",
       createdAt: "2025-11-20",
       assignedToUserId: "u2",
     },
     {
       id: "L2",
-      name: "מאמן כושר – עידן כהן",
+      name: "משק ליאור - ביטוח חווה",
       phone: "052-9876543",
-      source: "פייסבוק",
+      source: "הפניה מסוכן אחר",
       status: "NEW",
-      createdAt: "2025-11-25",
-      lastChannel: "WHATSAPP",
-      notes: "שאל לגבי ביטוח מאמן אישי בבית הלקוח.",
+      createdAt: "2025-11-23",
+      estimatedAnnualPremium: 12000,
+      assignedToUserId: "u2",
     },
   ]);
 
-  // === משימות ===
+  // --- משימות ---
+
   const addTask: DataContextValue["addTask"] = (data) => {
     const id = `task_${Date.now()}`;
     const createdAt = new Date().toISOString().slice(0, 10);
@@ -129,7 +131,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
-  // === לידים ===
+  // --- לידים ---
+
   const addLead: DataContextValue["addLead"] = (data) => {
     const id = `lead_${Date.now()}`;
     const createdAt = new Date().toISOString().slice(0, 10);
