@@ -1,40 +1,18 @@
 // src/App.tsx
-import React, { useState } from "react";
-import Layout from "./components/Layout";
-import Dashboard from "./pages/Dashboard";
+import React from "react";
 import MyTasks from "./pages/MyTasks";
-import TeamTasks from "./pages/TeamTasks";
-import Leads from "./pages/Leads";
-import { AuthProvider } from "./context/AuthContext";
-import { DataProvider } from "./context/DataContext";
-
-export type PageKey = "dashboard" | "myTasks" | "teamTasks" | "leads";
 
 const App: React.FC = () => {
-  const [page, setPage] = useState<PageKey>("dashboard");
-
-  const renderPage = () => {
-    switch (page) {
-      case "myTasks":
-        return <MyTasks />;
-      case "teamTasks":
-        return <TeamTasks />;
-      case "leads":
-        return <Leads />;
-      case "dashboard":
-      default:
-        return <Dashboard />;
-    }
-  };
-
   return (
-    <AuthProvider>
-      <DataProvider>
-        <Layout currentPage={page} onChangePage={setPage}>
-          {renderPage()}
-        </Layout>
-      </DataProvider>
-    </AuthProvider>
+    <div className="min-h-screen bg-slate-100" dir="rtl">
+      <header className="bg-white border-b border-slate-200 px-4 py-3">
+        <h1 className="text-lg font-bold text-slate-800">ברק ביטוחים – המשימות שלי</h1>
+        <p className="text-xs text-slate-500 mt-1">מעקב משימות לעובדי הסוכנות (טיוטות, חידושים, לידים, גבייה ועוד).</p>
+      </header>
+      <main className="p-4">
+        <MyTasks />
+      </main>
+    </div>
   );
 };
 
