@@ -1,159 +1,336 @@
-import { Calculator as CalcIcon } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import React, { useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { Calculator, User, Dumbbell, Calendar, Home } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
 
 const Calculators = () => {
-  const [carValue, setCarValue] = useState("");
-  const [carAge, setCarAge] = useState("");
-  const [homeValue, setHomeValue] = useState("");
-  const [homeSize, setHomeSize] = useState("");
+  // מחשבון סוסים
+  const [thirdParty, setThirdParty] = useState(true);
+  const [usageType, setUsageType] = useState<"pleasure" | "competition">("pleasure");
+  const [lifeInsurance, setLifeInsurance] = useState(false);
+  const [horseType, setHorseType] = useState<"5" | "6" | "6.5">("5");
+  const [horseValue, setHorseValue] = useState("");
+  const [includeTheft, setIncludeTheft] = useState(true);
+  const [healthInsurance, setHealthInsurance] = useState(false);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+
+  const calculateHorseInsurance = () => {
+    let total = 0;
+
+    // צד ג'
+    if (thirdParty) {
+      total += usageType === "pleasure" ? 700 : 800;
+    }
+
+    // ביטוח חיים
+    if (lifeInsurance && horseValue) {
+      const value = parseFloat(horseValue);
+      let rate = parseFloat(horseType) / 100;
+      let lifeAmount = value * rate;
+      
+      // הנחה אם ללא גניבה
+      if (!includeTheft) {
+        lifeAmount *= 0.9;
+      }
+      
+      total += lifeAmount;
+    }
+
+    // בריאות
+    if (healthInsurance) {
+      total += lifeInsurance ? 700 : 1200;
+    }
+
+    // חישוב לתקופה
+    if (startDate && endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+      const days = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+      const periodPremium = (total / 365) * days;
+      return { annual: total, period: periodPremium, days };
+    }
+
+    return { annual: total, period: 0, days: 0 };
+  };
+
+  const horseResult = calculateHorseInsurance();
+
+  // Auto-fill תאריך סיום
+  const handleStartDateChange = (value: string) => {
+    setStartDate(value);
+    if (value) {
+      const start = new Date(value);
+      const end = new Date(start);
+      end.setFullYear(end.getFullYear() + 1);
+      end.setDate(end.getDate() - 1);
+      setEndDate(end.toISOString().slice(0, 10));
+    }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8" dir="rtl">
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">מחשבונים</h1>
-        <p className="text-muted-foreground">כלים לחישוב עלויות ופרמיות ביטוח</p>
+        <h1 className="text-4xl font-bold text-foreground mb-2">מחשבוני ביטוח</h1>
+        <p className="text-muted-foreground text-lg">
+          כלים מתקדמים לחישוב פרמיות ביטוח מדויקות
+        </p>
       </div>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalcIcon className="h-5 w-5 text-primary" />
-              מחשבון ביטוח רכב
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="car-value">שווי הרכב (₪)</Label>
-              <Input
-                id="car-value"
-                type="number"
-                placeholder="הזן שווי רכב..."
-                value={carValue}
-                onChange={(e) => setCarValue(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="car-age">גיל הרכב (שנים)</Label>
-              <Input
-                id="car-age"
-                type="number"
-                placeholder="הזן גיל רכב..."
-                value={carAge}
-                onChange={(e) => setCarAge(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="driver-age">גיל הנהג</Label>
-              <Input id="driver-age" type="number" placeholder="הזן גיל נהג..." />
-            </div>
-            <Button className="w-full">חשב פרמיה</Button>
-            {carValue && carAge && (
-              <div className="p-4 bg-primary/10 rounded-lg">
-                <p className="text-sm text-muted-foreground">פרמיה משוערת</p>
-                <p className="text-2xl font-bold text-primary">₪3,500</p>
-                <p className="text-xs text-muted-foreground mt-1">לשנה</p>
+      {/* מחשבון סוסים */}
+      <Card className="border-2 border-primary/20">
+        <CardHeader className="bg-primary/5">
+          <CardTitle className="flex items-center gap-3 text-2xl">
+            <Calculator className="h-7 w-7 text-primary" />
+            מחשבון ביטוח סוסים
+          </CardTitle>
+          <CardDescription className="text-base">
+            חישוב מדויק של פרמיית ביטוח לסוסים כולל צד ג', חיים, ובריאות
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-6 space-y-6">
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* צד ג' */}
+            <div className="space-y-4 p-5 bg-muted/30 rounded-lg">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                ביטוח צד ג'
+                <Badge variant={thirdParty ? "default" : "secondary"}>
+                  {thirdParty ? "כלול" : "לא כלול"}
+                </Badge>
+              </h3>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="third-party" className="text-base">כולל ביטוח צד ג'</Label>
+                <Switch
+                  id="third-party"
+                  checked={thirdParty}
+                  onCheckedChange={setThirdParty}
+                />
               </div>
-            )}
-          </CardContent>
-        </Card>
+              {thirdParty && (
+                <div className="space-y-3">
+                  <Label className="text-base">סוג שימוש:</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      type="button"
+                      variant={usageType === "pleasure" ? "default" : "outline"}
+                      onClick={() => setUsageType("pleasure")}
+                      className="h-auto py-3"
+                    >
+                      <div className="text-center">
+                        <div className="font-bold">הנאה</div>
+                        <div className="text-xs mt-1">₪700</div>
+                      </div>
+                    </Button>
+                    <Button
+                      type="button"
+                      variant={usageType === "competition" ? "default" : "outline"}
+                      onClick={() => setUsageType("competition")}
+                      className="h-auto py-3"
+                    >
+                      <div className="text-center">
+                        <div className="font-bold">תחרות</div>
+                        <div className="text-xs mt-1">₪800</div>
+                      </div>
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CalcIcon className="h-5 w-5 text-secondary" />
-              מחשבון ביטוח דירה
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="home-value">שווי הדירה (₪)</Label>
-              <Input
-                id="home-value"
-                type="number"
-                placeholder="הזן שווי דירה..."
-                value={homeValue}
-                onChange={(e) => setHomeValue(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="home-size">גודל הדירה (מ"ר)</Label>
-              <Input
-                id="home-size"
-                type="number"
-                placeholder="הזן גודל..."
-                value={homeSize}
-                onChange={(e) => setHomeSize(e.target.value)}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="home-floor">קומה</Label>
-              <Input id="home-floor" type="number" placeholder="הזן קומה..." />
-            </div>
-            <Button className="w-full">חשב פרמיה</Button>
-            {homeValue && homeSize && (
-              <div className="p-4 bg-secondary/10 rounded-lg">
-                <p className="text-sm text-muted-foreground">פרמיה משוערת</p>
-                <p className="text-2xl font-bold text-secondary">₪1,200</p>
-                <p className="text-xs text-muted-foreground mt-1">לשנה</p>
+            {/* ביטוח חיים */}
+            <div className="space-y-4 p-5 bg-muted/30 rounded-lg">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                ביטוח חיים
+                <Badge variant={lifeInsurance ? "default" : "secondary"}>
+                  {lifeInsurance ? "כלול" : "לא כלול"}
+                </Badge>
+              </h3>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="life-insurance" className="text-base">כולל ביטוח חיים</Label>
+                <Switch
+                  id="life-insurance"
+                  checked={lifeInsurance}
+                  onCheckedChange={setLifeInsurance}
+                />
               </div>
-            )}
+              {lifeInsurance && (
+                <div className="space-y-3">
+                  <div>
+                    <Label htmlFor="horse-type" className="text-base">סוג סוס:</Label>
+                    <Select value={horseType} onValueChange={(v: any) => setHorseType(v)}>
+                      <SelectTrigger id="horse-type" className="mt-2">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="5">רגיל (5%)</SelectItem>
+                        <SelectItem value="6">ספורט/תחרויות (6%)</SelectItem>
+                        <SelectItem value="6.5">סוס מרוץ (6.5%)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div>
+                    <Label htmlFor="horse-value" className="text-base">ערך הסוס (₪):</Label>
+                    <Input
+                      id="horse-value"
+                      type="number"
+                      placeholder="לדוגמה: 50000"
+                      value={horseValue}
+                      onChange={(e) => setHorseValue(e.target.value)}
+                      className="mt-2 text-lg"
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <Label htmlFor="theft" className="text-base">כולל גניבה</Label>
+                    <Switch
+                      id="theft"
+                      checked={includeTheft}
+                      onCheckedChange={setIncludeTheft}
+                    />
+                  </div>
+                  {!includeTheft && (
+                    <p className="text-sm text-success">הנחה של 10% ללא כיסוי גניבה</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* בריאות */}
+            <div className="space-y-4 p-5 bg-muted/30 rounded-lg">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                ביטוח בריאות
+                <Badge variant={healthInsurance ? "default" : "secondary"}>
+                  {healthInsurance ? "כלול" : "לא כלול"}
+                </Badge>
+              </h3>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="health" className="text-base">כולל ביטוח בריאות</Label>
+                <Switch
+                  id="health"
+                  checked={healthInsurance}
+                  onCheckedChange={setHealthInsurance}
+                />
+              </div>
+              {healthInsurance && (
+                <div className="p-3 bg-background rounded border border-border">
+                  <p className="text-sm text-muted-foreground">
+                    {lifeInsurance ? (
+                      <span>עלות: <span className="font-bold text-foreground text-lg">₪700</span> (עם חיים)</span>
+                    ) : (
+                      <span>עלות: <span className="font-bold text-foreground text-lg">₪1,200</span> (ללא חיים)</span>
+                    )}
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* תקופת ביטוח */}
+            <div className="space-y-4 p-5 bg-muted/30 rounded-lg">
+              <h3 className="font-bold text-lg flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                תקופת ביטוח
+              </h3>
+              <div>
+                <Label htmlFor="start-date" className="text-base">תאריך תחילה:</Label>
+                <Input
+                  id="start-date"
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => handleStartDateChange(e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              <div>
+                <Label htmlFor="end-date" className="text-base">תאריך סיום:</Label>
+                <Input
+                  id="end-date"
+                  type="date"
+                  value={endDate}
+                  onChange={(e) => setEndDate(e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+              {horseResult.days > 0 && (
+                <p className="text-sm text-muted-foreground">
+                  תקופה: {horseResult.days} ימים
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* תוצאות */}
+          <div className="bg-gradient-to-br from-primary/10 to-secondary/10 p-6 rounded-lg border-2 border-primary/30">
+            <h3 className="text-xl font-bold mb-4 text-center">תוצאות החישוב</h3>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="text-center p-4 bg-background rounded-lg">
+                <p className="text-sm text-muted-foreground mb-2">פרמיה שנתית</p>
+                <p className="text-4xl font-bold text-primary">
+                  ₪{horseResult.annual.toLocaleString()}
+                </p>
+              </div>
+              {horseResult.period > 0 && (
+                <div className="text-center p-4 bg-background rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-2">
+                    פרמיה לתקופה ({horseResult.days} ימים)
+                  </p>
+                  <p className="text-4xl font-bold text-secondary">
+                    ₪{Math.round(horseResult.period).toLocaleString()}
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* מחשבונים נוספים - מקומות שמורים */}
+      <div className="grid md:grid-cols-3 gap-6">
+        <Card className="border-dashed">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Home className="h-6 w-6 text-primary" />
+              ביטוח חווה
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              חישוב פרמיה לחוות סוסים לפי מספר סוסים, מדריכים, טיולים ועוד
+            </p>
+            <Badge variant="secondary">בפיתוח</Badge>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-dashed">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CalcIcon className="h-5 w-5 text-success" />
-              מחשבון ביטוח חיים
+              <User className="h-6 w-6 text-primary" />
+              ביטוח מדריכי רכיבה
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="age">גיל</Label>
-              <Input id="age" type="number" placeholder="הזן גיל..." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="coverage">סכום כיסוי (₪)</Label>
-              <Input id="coverage" type="number" placeholder="הזן סכום כיסוי..." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="period">תקופת ביטוח (שנים)</Label>
-              <Input id="period" type="number" placeholder="הזן תקופה..." />
-            </div>
-            <Button className="w-full">חשב פרמיה</Button>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              חישוב לפי מספר מדריכים, היקף פעילות ותוכניות מיוחדות
+            </p>
+            <Badge variant="secondary">בפיתוח</Badge>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="border-dashed">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CalcIcon className="h-5 w-5 text-warning" />
-              מחשבון ביטוח בריאות
+              <Dumbbell className="h-6 w-6 text-primary" />
+              ביטוח מאמנים
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="health-age">גיל</Label>
-              <Input id="health-age" type="number" placeholder="הזן גיל..." />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="health-coverage">רמת כיסוי</Label>
-              <select className="w-full p-2 border border-input rounded-md bg-background">
-                <option>בסיסי</option>
-                <option>משופר</option>
-                <option>מקיף</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="family">מספר בני משפחה</Label>
-              <Input id="family" type="number" placeholder="הזן מספר..." />
-            </div>
-            <Button className="w-full">חשב פרמיה</Button>
+          <CardContent>
+            <p className="text-sm text-muted-foreground mb-4">
+              ביטוח למאמני כושר ואומנויות לחימה
+            </p>
+            <Badge variant="secondary">בפיתוח</Badge>
           </CardContent>
         </Card>
       </div>

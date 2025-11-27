@@ -1,67 +1,108 @@
 // src/components/Sidebar.tsx
 import { NavLink } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import {
+  LayoutDashboard,
+  Calculator,
+  Users,
+  Sparkles,
+  CheckSquare,
+  RotateCw,
+  CreditCard,
+  FileText,
+  FolderOpen,
+  Scale,
+  UserCog,
+  TrendingUp,
+} from "lucide-react";
 
 const navClasses = ({ isActive }: { isActive: boolean }) =>
-  `flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition ${
-    isActive ? "bg-blue-600 text-white" : "text-slate-700 hover:bg-blue-50"
+  `flex items-center gap-3 px-4 py-3 rounded-lg text-base font-medium transition-all ${
+    isActive
+      ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-sm"
+      : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
   }`;
 
 const Sidebar = () => {
   const { isAdmin } = useAuth();
 
   return (
-    <aside className="w-64 bg-white border-l border-slate-200 flex flex-col">
-      <div className="p-4 border-b border-slate-200">
+    <aside className="w-72 bg-sidebar border-l border-sidebar-border flex flex-col shadow-lg">
+      <div className="p-6 border-b border-sidebar-border">
         <div className="flex items-center gap-3">
           <img
             src="https://barak-korb.co.il/wp-content/uploads/2024/01/logo.png"
             alt="ברק ביטוחים"
-            className="h-10 object-contain"
+            className="h-12 object-contain"
           />
         </div>
-        <p className="mt-2 text-xs text-slate-500">מערכת ניהול ומחשבוני ביטוח – ברק ביטוחים</p>
+        <p className="mt-3 text-sm text-sidebar-foreground/80 leading-relaxed">
+          מערכת ניהול ומחשבוני ביטוח מתקדמת
+        </p>
       </div>
-      <nav className="flex-1 p-3 space-y-1 text-right">
+      <nav className="flex-1 p-4 space-y-1.5 text-right overflow-y-auto">
         <NavLink to="/" className={navClasses} end>
-          🏠 דשבורד
+          <LayoutDashboard className="h-5 w-5" />
+          דשבורד
         </NavLink>
         <NavLink to="/calculators" className={navClasses}>
-          🧮 מחשבונים
+          <Calculator className="h-5 w-5" />
+          מחשבונים
         </NavLink>
         <NavLink to="/clients" className={navClasses}>
-          👥 מבוטחים
+          <Users className="h-5 w-5" />
+          לקוחות ופוליסות
         </NavLink>
         <NavLink to="/leads" className={navClasses}>
-          🌱 לידים
+          <Sparkles className="h-5 w-5" />
+          לידים
         </NavLink>
-        <NavLink to="/tasks" className={navClasses}>
-          ✅ משימות
+        <NavLink to="/my-tasks" className={navClasses}>
+          <CheckSquare className="h-5 w-5" />
+          המשימות שלי
         </NavLink>
+        {isAdmin && (
+          <NavLink to="/team-tasks" className={navClasses}>
+            <CheckSquare className="h-5 w-5" />
+            משימות הצוות
+          </NavLink>
+        )}
         <NavLink to="/renewals" className={navClasses}>
-          🔁 חידושים
+          <RotateCw className="h-5 w-5" />
+          חידושים
         </NavLink>
         <NavLink to="/collections" className={navClasses}>
-          💳 גבייה
+          <CreditCard className="h-5 w-5" />
+          גבייה
         </NavLink>
         <NavLink to="/certificates" className={navClasses}>
-          📄 אישורי קיום
+          <FileText className="h-5 w-5" />
+          אישורי קיום
         </NavLink>
         <NavLink to="/documents" className={navClasses}>
-          📂 מסמכים
+          <FolderOpen className="h-5 w-5" />
+          מסמכים
         </NavLink>
         <NavLink to="/regulations" className={navClasses}>
-          ⚖️ חוקים וחוזרים
+          <Scale className="h-5 w-5" />
+          חוקים וחוזרים
         </NavLink>
         <NavLink to="/employees" className={navClasses}>
-          🧑‍💼 עובדים וחופשות
+          <UserCog className="h-5 w-5" />
+          עובדים וחופשות
         </NavLink>
         {isAdmin && (
           <NavLink to="/commissions" className={navClasses}>
-            📈 עמלות ודוחות
+            <TrendingUp className="h-5 w-5" />
+            עמלות ודוחות
           </NavLink>
         )}
       </nav>
+      <div className="p-4 border-t border-sidebar-border">
+        <p className="text-xs text-sidebar-foreground/60 text-center">
+          © 2024 ברק ביטוחים
+        </p>
+      </div>
     </aside>
   );
 };
