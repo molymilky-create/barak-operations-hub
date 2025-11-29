@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "@/components/ui/sonner";
-import Layout from "./components/Layout";
+import { AppLayout } from "./components/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import Calculators from "./pages/Calculators";
 import Clients from "./pages/Clients";
@@ -20,7 +20,7 @@ import NotFound from "./pages/NotFound";
 const App: React.FC = () => {
   return (
     <BrowserRouter>
-      <Layout>
+      <AppLayout>
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/calculators" element={<Calculators />} />
@@ -37,7 +37,7 @@ const App: React.FC = () => {
           <Route path="/commissions" element={<Commissions />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
-      </Layout>
+      </AppLayout>
       <Toaster />
     </BrowserRouter>
   );
