@@ -1,6 +1,7 @@
 import { LayoutDashboard, Users, RefreshCw, DollarSign, TrendingUp, CheckSquare, Send, FileText, BookOpen, Calculator, UserCog, Bot, Shield, ClipboardList, Settings, Zap } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/context/AuthContext";
+import barakLogo from "@/assets/barak-logo-full.png";
 import {
   Sidebar,
   SidebarContent,
@@ -47,14 +48,12 @@ export function AppSidebar({ side = "right" }: AppSidebarProps) {
   return (
     <Sidebar side={side} collapsible="none">
       <SidebarHeader className="border-b border-sidebar-border p-4">
-        <div className="flex items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-            <span className="text-lg font-bold text-primary-foreground">ב</span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-lg font-bold text-sidebar-foreground">ברק ביטוח</span>
-            <span className="text-xs text-sidebar-foreground/70">מערכת ניהול</span>
-          </div>
+        <div className="flex items-center justify-center">
+          <img 
+            src={barakLogo} 
+            alt="ברק ביטוחים" 
+            className="h-16 w-auto object-contain"
+          />
         </div>
       </SidebarHeader>
       <SidebarContent>
