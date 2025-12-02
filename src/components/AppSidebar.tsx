@@ -32,7 +32,11 @@ const menuItems = [
   { title: "עוזר AI", url: "/ai-assistant", icon: Bot },
 ];
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  side?: "left" | "right";
+}
+
+export function AppSidebar({ side = "right" }: AppSidebarProps) {
   const { isAdmin } = useAuth();
 
   const filteredMenuItems = menuItems.filter((item) => {
@@ -41,7 +45,7 @@ export function AppSidebar() {
   });
 
   return (
-    <Sidebar>
+    <Sidebar side={side}>
       <SidebarHeader className="border-b border-sidebar-border p-4">
         <div className="flex items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
