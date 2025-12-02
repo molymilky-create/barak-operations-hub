@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, RefreshCw, DollarSign, TrendingUp, CheckSquare, Send, FileText, BookOpen, Calculator, UserCog, Bot, Shield, ClipboardList, Settings } from "lucide-react";
+import { LayoutDashboard, Users, RefreshCw, DollarSign, TrendingUp, CheckSquare, Send, FileText, BookOpen, Calculator, UserCog, Bot, Shield, ClipboardList, Settings, Zap } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -26,6 +26,7 @@ const menuItems = [
   { title: "חוקים וחוזרים", url: "/regulations", icon: BookOpen },
   { title: "מחשבונים", url: "/calculators", icon: Calculator },
   { title: "בונה מחשבונים", url: "/calculator-builder", icon: Settings, adminOnly: true },
+  { title: "אוטומציות", url: "/workflows", icon: Zap, adminOnly: true },
   { title: "עובדים וחופשות", url: "/employees", icon: UserCog },
   { title: "עמלות", url: "/commissions", icon: DollarSign, adminOnly: true },
   { title: "עוזר AI", url: "/ai-assistant", icon: Bot },
