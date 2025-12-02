@@ -17,6 +17,8 @@ import Documents from "./pages/Documents";
 import Regulations from "./pages/Regulations";
 import Employees from "./pages/Employees";
 import Commissions from "./pages/Commissions";
+import Workflows from "./pages/Workflows";
+import WorkflowBuilder from "./pages/WorkflowBuilder";
 import NotFound from "./pages/NotFound";
 
 const App: React.FC = () => {
@@ -39,6 +41,9 @@ const App: React.FC = () => {
           <Route path="/regulations" element={<Regulations />} />
           <Route path="/employees" element={<Employees />} />
           <Route path="/commissions" element={<Commissions />} />
+          <Route path="/workflows" element={<Workflows />} />
+          <Route path="/workflow-builder" element={<WorkflowBuilder />} />
+          <Route path="/workflow-builder/:id" element={<WorkflowBuilder />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppLayout>

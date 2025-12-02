@@ -920,6 +920,164 @@ export type Database = {
           },
         ]
       }
+      workflow_actions: {
+        Row: {
+          action_config: Json
+          action_type: Database["public"]["Enums"]["workflow_action_type"]
+          created_at: string
+          id: string
+          sort_order: number | null
+          workflow_id: string
+        }
+        Insert: {
+          action_config?: Json
+          action_type: Database["public"]["Enums"]["workflow_action_type"]
+          created_at?: string
+          id?: string
+          sort_order?: number | null
+          workflow_id: string
+        }
+        Update: {
+          action_config?: Json
+          action_type?: Database["public"]["Enums"]["workflow_action_type"]
+          created_at?: string
+          id?: string
+          sort_order?: number | null
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_actions_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_conditions: {
+        Row: {
+          created_at: string
+          field: string
+          id: string
+          logic_operator: string | null
+          operator: string
+          sort_order: number | null
+          value: string
+          workflow_id: string
+        }
+        Insert: {
+          created_at?: string
+          field: string
+          id?: string
+          logic_operator?: string | null
+          operator: string
+          sort_order?: number | null
+          value: string
+          workflow_id: string
+        }
+        Update: {
+          created_at?: string
+          field?: string
+          id?: string
+          logic_operator?: string | null
+          operator?: string
+          sort_order?: number | null
+          value?: string
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_conditions_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflow_logs: {
+        Row: {
+          error_message: string | null
+          executed_at: string
+          id: string
+          result: Json | null
+          status: string
+          trigger_data: Json | null
+          workflow_id: string
+        }
+        Insert: {
+          error_message?: string | null
+          executed_at?: string
+          id?: string
+          result?: Json | null
+          status?: string
+          trigger_data?: Json | null
+          workflow_id: string
+        }
+        Update: {
+          error_message?: string | null
+          executed_at?: string
+          id?: string
+          result?: Json | null
+          status?: string
+          trigger_data?: Json | null
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflow_logs_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      workflows: {
+        Row: {
+          created_at: string
+          created_by_user_id: string | null
+          description: string | null
+          id: string
+          name: string
+          status: Database["public"]["Enums"]["workflow_status"]
+          trigger_config: Json | null
+          trigger_type: Database["public"]["Enums"]["workflow_trigger_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by_user_id?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          status?: Database["public"]["Enums"]["workflow_status"]
+          trigger_config?: Json | null
+          trigger_type: Database["public"]["Enums"]["workflow_trigger_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by_user_id?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          status?: Database["public"]["Enums"]["workflow_status"]
+          trigger_config?: Json | null
+          trigger_type?: Database["public"]["Enums"]["workflow_trigger_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "workflows_created_by_user_id_fkey"
+            columns: ["created_by_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -982,6 +1140,26 @@ export type Database = {
         | "DONE"
         | "CANCELLED"
       timeoff_status: "PENDING" | "APPROVED" | "REJECTED"
+      workflow_action_type:
+        | "CREATE_TASK"
+        | "UPDATE_STATUS"
+        | "SEND_EMAIL"
+        | "SEND_SMS"
+        | "ADD_NOTE"
+        | "ASSIGN_USER"
+        | "CREATE_REMINDER"
+      workflow_status: "ACTIVE" | "INACTIVE" | "DRAFT"
+      workflow_trigger_type:
+        | "LEAD_CREATED"
+        | "LEAD_STATUS_CHANGED"
+        | "TASK_CREATED"
+        | "TASK_OVERDUE"
+        | "TASK_STATUS_CHANGED"
+        | "RENEWAL_DUE"
+        | "COLLECTION_DUE"
+        | "CLAIM_CREATED"
+        | "CLAIM_STATUS_CHANGED"
+        | "SCHEDULE"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1163,6 +1341,28 @@ export const Constants = {
         "CANCELLED",
       ],
       timeoff_status: ["PENDING", "APPROVED", "REJECTED"],
+      workflow_action_type: [
+        "CREATE_TASK",
+        "UPDATE_STATUS",
+        "SEND_EMAIL",
+        "SEND_SMS",
+        "ADD_NOTE",
+        "ASSIGN_USER",
+        "CREATE_REMINDER",
+      ],
+      workflow_status: ["ACTIVE", "INACTIVE", "DRAFT"],
+      workflow_trigger_type: [
+        "LEAD_CREATED",
+        "LEAD_STATUS_CHANGED",
+        "TASK_CREATED",
+        "TASK_OVERDUE",
+        "TASK_STATUS_CHANGED",
+        "RENEWAL_DUE",
+        "COLLECTION_DUE",
+        "CLAIM_CREATED",
+        "CLAIM_STATUS_CHANGED",
+        "SCHEDULE",
+      ],
     },
   },
 } as const
