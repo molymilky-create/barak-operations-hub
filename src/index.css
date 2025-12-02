@@ -2,114 +2,148 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* 
+  ברק ביטוחים - Design System
+  Based on professional dashboard UI/UX best practices:
+  - Clean typography with Rubik (excellent Hebrew support)
+  - Consistent spacing and visual hierarchy
+  - Subtle shadows and smooth transitions
+  - Accessible color contrast
 */
 
 @layer base {
   :root {
-    /* ברק ביטוחים - צבעים מהאתר */
-    --background: 210 25% 98%;
-    --foreground: 210 20% 15%;
+    /* === Color Palette === */
+    /* Primary: Deep blue - trust, professionalism */
+    --primary: 210 65% 42%;
+    --primary-foreground: 0 0% 100%;
+    
+    /* Secondary: Warm orange - energy, action */
+    --secondary: 27 90% 52%;
+    --secondary-foreground: 0 0% 100%;
+    
+    /* Background: Clean, minimal */
+    --background: 220 20% 97%;
+    --foreground: 220 25% 12%;
 
+    /* Cards: Elevated surfaces */
     --card: 0 0% 100%;
-    --card-foreground: 210 20% 15%;
+    --card-foreground: 220 25% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 210 20% 15%;
+    --popover-foreground: 220 25% 12%;
 
-    --primary: 197 45% 48%; /* כחול/תכלת מהלוגו */
-    --primary-foreground: 0 0% 100%;
+    /* Muted: Subtle backgrounds */
+    --muted: 220 15% 94%;
+    --muted-foreground: 220 15% 45%;
 
-    --secondary: 27 85% 55%; /* כתום חם */
-    --secondary-foreground: 0 0% 100%;
+    /* Accent: Interactive highlights */
+    --accent: 210 65% 95%;
+    --accent-foreground: 210 65% 35%;
 
-    --muted: 210 25% 96%;
-    --muted-foreground: 210 15% 45%;
-
-    --accent: 197 45% 48%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
+    /* Semantic colors */
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 76% 36%;
+    --success: 152 69% 40%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
+    --warning-foreground: 25 50% 15%;
 
-    --border: 210 20% 88%;
-    --input: 210 20% 88%;
-    --ring: 197 45% 48%;
+    --info: 200 80% 50%;
+    --info-foreground: 0 0% 100%;
 
-    --radius: 0.75rem;
+    /* Borders and inputs */
+    --border: 220 15% 88%;
+    --input: 220 15% 88%;
+    --ring: 210 65% 50%;
 
-    --sidebar-background: 197 45% 48%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 27 85% 55%;
+    /* Radius - slightly rounded for modern feel */
+    --radius: 0.625rem;
+
+    /* === Sidebar === */
+    --sidebar-background: 220 30% 15%;
+    --sidebar-foreground: 220 15% 92%;
+    --sidebar-primary: 27 90% 52%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 197 55% 55%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 197 45% 40%;
-    --sidebar-ring: 27 85% 55%;
+    --sidebar-accent: 220 30% 22%;
+    --sidebar-accent-foreground: 220 15% 92%;
+    --sidebar-border: 220 30% 22%;
+    --sidebar-ring: 27 90% 52%;
 
-    --chart-1: 197 45% 48%;
-    --chart-2: 27 85% 55%;
-    --chart-3: 142 76% 36%;
+    /* === Charts === */
+    --chart-1: 210 65% 42%;
+    --chart-2: 27 90% 52%;
+    --chart-3: 152 69% 40%;
     --chart-4: 38 92% 50%;
-    --chart-5: 280 65% 60%;
+    --chart-5: 280 60% 55%;
+
+    /* === Shadows === */
+    --shadow-sm: 0 1px 2px 0 hsl(220 15% 20% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(220 15% 20% / 0.08), 0 2px 4px -2px hsl(220 15% 20% / 0.05);
+    --shadow-lg: 0 10px 15px -3px hsl(220 15% 20% / 0.08), 0 4px 6px -4px hsl(220 15% 20% / 0.05);
+    --shadow-xl: 0 20px 25px -5px hsl(220 15% 20% / 0.08), 0 8px 10px -6px hsl(220 15% 20% / 0.05);
   }
 
   .dark {
-    --background: 210 30% 10%;
-    --foreground: 210 25% 95%;
+    /* Dark mode colors */
+    --background: 220 25% 8%;
+    --foreground: 220 15% 95%;
 
-    --card: 210 30% 12%;
-    --card-foreground: 210 25% 95%;
+    --card: 220 25% 12%;
+    --card-foreground: 220 15% 95%;
 
-    --popover: 210 30% 12%;
-    --popover-foreground: 210 25% 95%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 220 15% 95%;
 
-    --primary: 197 45% 55%;
+    --primary: 210 65% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 27 85% 60%;
+    --secondary: 27 85% 58%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 210 30% 18%;
-    --muted-foreground: 210 20% 60%;
+    --muted: 220 25% 16%;
+    --muted-foreground: 220 15% 60%;
 
-    --accent: 197 45% 55%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 25% 18%;
+    --accent-foreground: 220 15% 95%;
 
-    --destructive: 0 62% 50%;
+    --destructive: 0 62% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --success: 142 76% 40%;
+    --success: 152 69% 45%;
     --success-foreground: 0 0% 100%;
 
     --warning: 38 92% 55%;
     --warning-foreground: 0 0% 100%;
 
-    --border: 210 30% 20%;
-    --input: 210 30% 20%;
-    --ring: 197 45% 55%;
+    --info: 200 80% 55%;
+    --info-foreground: 0 0% 100%;
 
-    --sidebar-background: 197 45% 45%;
-    --sidebar-foreground: 0 0% 100%;
-    --sidebar-primary: 27 85% 60%;
+    --border: 220 25% 20%;
+    --input: 220 25% 20%;
+    --ring: 210 65% 55%;
+
+    --sidebar-background: 220 30% 10%;
+    --sidebar-foreground: 220 15% 92%;
+    --sidebar-primary: 27 85% 58%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 197 55% 60%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 197 45% 35%;
-    --sidebar-ring: 27 85% 60%;
+    --sidebar-accent: 220 30% 16%;
+    --sidebar-accent-foreground: 220 15% 92%;
+    --sidebar-border: 220 30% 16%;
+    --sidebar-ring: 27 85% 58%;
 
-    --chart-1: 197 45% 55%;
-    --chart-2: 27 85% 60%;
-    --chart-3: 142 76% 40%;
+    --chart-1: 210 65% 55%;
+    --chart-2: 27 85% 58%;
+    --chart-3: 152 69% 45%;
     --chart-4: 38 92% 55%;
-    --chart-5: 280 65% 65%;
+    --chart-5: 280 60% 60%;
+
+    --shadow-sm: 0 1px 2px 0 hsl(220 30% 5% / 0.3);
+    --shadow-md: 0 4px 6px -1px hsl(220 30% 5% / 0.4), 0 2px 4px -2px hsl(220 30% 5% / 0.3);
+    --shadow-lg: 0 10px 15px -3px hsl(220 30% 5% / 0.4), 0 4px 6px -4px hsl(220 30% 5% / 0.3);
+    --shadow-xl: 0 20px 25px -5px hsl(220 30% 5% / 0.4), 0 8px 10px -6px hsl(220 30% 5% / 0.3);
   }
 }
 
@@ -118,17 +152,192 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    scroll-behavior: smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Rubik', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
-  /* אנימציות נוספות */
-  .hover-scale {
-    @apply transition-transform duration-200 hover:scale-105;
+  /* Typography scale */
+  h1 {
+    @apply text-3xl font-bold tracking-tight;
   }
 
-  .hover-lift {
-    @apply transition-all duration-300 hover:-translate-y-1 hover:shadow-lg;
+  h2 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+
+  h3 {
+    @apply text-xl font-semibold;
+  }
+
+  h4 {
+    @apply text-lg font-medium;
+  }
+
+  /* Focus styles for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
+  }
+
+  /* Selection color */
+  ::selection {
+    @apply bg-primary/20 text-foreground;
+  }
+}
+
+@layer components {
+  /* Card hover effect */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5;
+  }
+
+  /* Stat card styling */
+  .stat-card {
+    @apply relative overflow-hidden rounded-xl border bg-card p-6 shadow-sm transition-all duration-200;
+  }
+
+  .stat-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-200;
+  }
+
+  .stat-card:hover::before {
+    @apply opacity-100;
+  }
+
+  /* Smooth fade in animation */
+  .fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Slide up animation */
+  .slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Pulse animation for notifications */
+  .pulse-dot {
+    @apply relative;
+  }
+
+  .pulse-dot::after {
+    content: '';
+    @apply absolute -top-1 -right-1 h-3 w-3 rounded-full bg-destructive;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.8;
+    }
+  }
+
+  /* Table row hover */
+  .table-row-hover {
+    @apply transition-colors hover:bg-muted/50;
+  }
+
+  /* Badge variants */
+  .badge-success {
+    @apply bg-success/10 text-success border-success/20;
+  }
+
+  .badge-warning {
+    @apply bg-warning/10 text-warning border-warning/20;
+  }
+
+  .badge-destructive {
+    @apply bg-destructive/10 text-destructive border-destructive/20;
+  }
+
+  .badge-info {
+    @apply bg-info/10 text-info border-info/20;
+  }
+
+  /* Skeleton loading */
+  .skeleton {
+    @apply animate-pulse rounded-md bg-muted;
+  }
+
+  /* Glass effect */
+  .glass {
+    @apply bg-background/80 backdrop-blur-sm border border-border/50;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom scrollbar */
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/30;
+  }
+
+  /* Text balance for headings */
+  .text-balance {
+    text-wrap: balance;
   }
 }
