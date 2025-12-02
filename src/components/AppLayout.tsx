@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 
 interface AppLayoutProps {
@@ -8,13 +8,10 @@ interface AppLayoutProps {
 
 export function AppLayout({ children }: AppLayoutProps) {
   return (
-    <SidebarProvider>
+    <SidebarProvider defaultOpen={true}>
       <div className="min-h-screen flex flex-row-reverse w-full bg-background">
         <AppSidebar />
         <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b border-border flex items-center justify-end px-4 bg-card">
-            <SidebarTrigger />
-          </header>
           <main className="flex-1 p-6">
             {children}
           </main>
