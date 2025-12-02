@@ -1,5 +1,6 @@
-import { LayoutDashboard, Users, RefreshCw, DollarSign, TrendingUp, CheckSquare, Send, FileText, BookOpen, Calculator, UserCog, Bot } from "lucide-react";
+import { LayoutDashboard, Users, RefreshCw, DollarSign, TrendingUp, CheckSquare, Send, FileText, BookOpen, Calculator, UserCog, Bot, Shield, ClipboardList, Settings } from "lucide-react";
 import { NavLink } from "@/components/NavLink";
+import { useAuth } from "@/context/AuthContext";
 import {
   Sidebar,
   SidebarContent,
@@ -13,20 +14,31 @@ import {
 
 const menuItems = [
   { title: "לוח בקרה", url: "/", icon: LayoutDashboard },
+  { title: "לידים", url: "/leads", icon: TrendingUp },
+  { title: "משימות שלי", url: "/my-tasks", icon: CheckSquare },
+  { title: "משימות צוות", url: "/team-tasks", icon: ClipboardList, adminOnly: true },
   { title: "לקוחות ופוליסות", url: "/clients", icon: Users },
   { title: "חידושים", url: "/renewals", icon: RefreshCw },
   { title: "גבייה", url: "/collections", icon: DollarSign },
-  { title: "לידים", url: "/leads", icon: TrendingUp },
-  { title: "משימות", url: "/tasks", icon: CheckSquare },
-  { title: "בקשות למוביל", url: "/carriers", icon: Send },
+  { title: "תביעות", url: "/claims", icon: Shield },
+  { title: "אישורי קיום", url: "/certificates", icon: FileText },
   { title: "מסמכים", url: "/documents", icon: FileText },
-  { title: "תקנון", url: "/regulations", icon: BookOpen },
+  { title: "חוקים וחוזרים", url: "/regulations", icon: BookOpen },
   { title: "מחשבונים", url: "/calculators", icon: Calculator },
+  { title: "בונה מחשבונים", url: "/calculator-builder", icon: Settings, adminOnly: true },
   { title: "עובדים וחופשות", url: "/employees", icon: UserCog },
+  { title: "עמלות", url: "/commissions", icon: DollarSign, adminOnly: true },
   { title: "עוזר AI", url: "/ai-assistant", icon: Bot },
 ];
 
 export function AppSidebar() {
+  const { isAdmin } = useAuth();
+
+  const filteredMenuItems = menuItems.filter((item) => {
+    if (item.adminOnly && !isAdmin) return false;
+    return true;
+  });
+
   return (
     <Sidebar>
       <SidebarHeader className="border-b border-sidebar-border p-4">
@@ -44,7 +56,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
+              {filteredMenuItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink

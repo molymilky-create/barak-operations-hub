@@ -4,12 +4,14 @@ import { Toaster } from "@/components/ui/sonner";
 import { AppLayout } from "./components/AppLayout";
 import Dashboard from "./pages/Dashboard";
 import Calculators from "./pages/Calculators";
+import CalculatorBuilder from "./pages/CalculatorBuilder";
 import Clients from "./pages/Clients";
 import Leads from "./pages/Leads";
 import MyTasks from "./pages/MyTasks";
 import TeamTasks from "./pages/TeamTasks";
 import Renewals from "./pages/Renewals";
 import Collections from "./pages/Collections";
+import Claims from "./pages/Claims";
 import Certificates from "./pages/Certificates";
 import Documents from "./pages/Documents";
 import Regulations from "./pages/Regulations";
@@ -24,12 +26,14 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Dashboard />} />
           <Route path="/calculators" element={<Calculators />} />
+          <Route path="/calculator-builder" element={<CalculatorBuilder />} />
           <Route path="/clients" element={<Clients />} />
           <Route path="/leads" element={<Leads />} />
           <Route path="/my-tasks" element={<MyTasks />} />
           <Route path="/team-tasks" element={<TeamTasks />} />
           <Route path="/renewals" element={<Renewals />} />
           <Route path="/collections" element={<Collections />} />
+          <Route path="/claims" element={<Claims />} />
           <Route path="/certificates" element={<Certificates />} />
           <Route path="/documents" element={<Documents />} />
           <Route path="/regulations" element={<Regulations />} />
